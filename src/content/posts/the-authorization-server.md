@@ -1,14 +1,15 @@
 ---
-title: "Part 3 - The OAuth Authorization Server"
+title: 'Part 3 - The OAuth Authorization Server'
 published: 2025-08-01
 draft: false
-description: "Learning about the OAuth Authorization Server from the authorization grant type"
-tags: ["OAuth Series"]
+description: 'Learning about the OAuth Authorization Server from the authorization grant type'
+tags: ['OAuth Series']
 ---
 
 ## 1 Introduction
 
 **1.1** In this section, there will be a deep dive into the Authorization server. An authorization server that supports the authorization code grant type has the following features:
+
 - Registers clients.
 - Performs the delegation action core to OAuth.
 - Issues tokens to clients.
@@ -27,14 +28,15 @@ Because of the vast amount of features the authorization server must support, it
 **2.3** The final step in registering a client is to define a redirect URI. Unlike the client ID and the client secret, the authorization server does not generate the redirect URI. The client provides the redirect URI.
 
 At the end of the client registration process, the authorization server would have a client object like this:
+
 ```javascript
 var clients = [
-	{
-		"client_id": "oauth-client-1",
-		"client_secret": "oauth-client-secret-1",
-		"redirect_uris": ["http://client-server:9000/callback"],
-	}
-];
+  {
+    client_id: 'oauth-client-1',
+    client_secret: 'oauth-client-secret-1',
+    redirect_uris: ['http://client-server:9000/callback'],
+  },
+]
 ```
 
 ## 3 Authorizing a Client
@@ -45,14 +47,33 @@ var clients = [
 
 **3.3** Once the client ID has been found, the authorization server must determine if the client exists in its database of predefined clients. If the client does not, an error is emitted such as `{error: 'Unknown client'}`. A classic check is to see if the `client_id` and `redirect_uri` match what is already stored in the database. Since only checking the `client_id` could lead to security gaps, all the current communication is being done on the public front channel.
 
-According to the OAuth specification, a client can register multiple redirect URIs to itself, allowing the client to be served from different URLs in different circumstances. This can complicate the client authorization process.
-
-**3.4** Finally, when the client is authorized, the user is prompted to give the client the relevant permissions to access the protected resource and act on behalf of the user.
+According to the OAuth specification, a client can register multiple redirect URIs for itself, allowing the client to be served from different URLs in different circumstances. This can complicate the client authorization process.
 
 :::warning
 :warning:</br>
-The OAuth protocol does not care if the user is **authenticated** when the authorization server prompts the user to authorize the client. User authentication is completely outside the scope of OAuth. This is why adequate care is required to supply user authentication at this stage.</br>
+The OAuth 2.0 protocol does not care if the user is **authenticated** when the authorization server prompts the user to authorize the client. User authentication is entirely outside the scope of OAuth. This is why adequate care is required to supply user authentication at this stage.</br>
 :warning:
 :::
 
-**3.5**
+**3.4** When the client is authorized, a `request ID` number is randomly generated to keep track of the client's initial authorization request. As we will see in the next step, this request ID will protect the server from cross-site request forgery. Also, this `request ID` will get stored in the database alongside the specific client's information that sent the initial authorization request to receive the authorization code.
+
+**3.5** The client is now authorized, with its request ID safely stored in the authorization server's database. The next stage prompts the user to authorize the client on the user's behalf.
+
+## 4 User Decision
+
+The user is prompted to give the client the relevant permissions to access the protected resource and act on the user's behalf. This can be done through a form using a UI. Here is an example:</br>
+
+<fieldset>
+Approve this Client?</br>
+ID: `test-client`
+    <select>
+        <option value="1">Approve</option>
+        <option value="2">Reject</option>
+    </select><br>
+    <label><input type="checkbox"> read<br></label>
+    <label><input type="checkbox"> write<br></label>
+    <label><input type="checkbox"> delete<br></label>
+    <button type="submi">Submit</button>
+</fieldset>
+
+You can see that the user can give the client fine-grained permissions by providing the client `read`, `write`, or `delete` permissions. These permissions are added in the `scope` section when the token is issued in later steps.
