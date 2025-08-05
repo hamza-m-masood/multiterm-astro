@@ -43,7 +43,7 @@ var clients = [
 
 **3.1** As discussed, the authorization server needs to authorize the client on behalf of the user so the client can receive an authorization code. This communication is done over the front channel, which needs to be reachable by the user's browser. Since most authorization servers are web servers, the authorization endpoint typically has the `/authorize` path and is always a `GET` request.
 
-**3.2** Firstly, when the `/authorize` endpoint is called, the authorization server finds out which client made the request. Normally, the client passes its identifier in the `client_id` parameter and its redirect URI in the `redirect_uri` parameter.
+**3.2** Firstly, when the `/authorize` endpoint is called, the authorization server finds out which client made the request. Typically, the client passes its identifier in the `client_id` parameter and its redirect URI in the `redirect_uri` parameter.
 
 **3.3** Once the client ID has been found, the authorization server must determine if the client exists in its database of predefined clients. If the client does not, an error is emitted such as `{error: 'Unknown client'}`. A classic check is to see if the `client_id` and `redirect_uri` match what is already stored in the database. Since only checking the `client_id` could lead to security gaps, all the current communication is being done on the public front channel.
 
@@ -57,11 +57,11 @@ The OAuth 2.0 protocol does not care if the user is **authenticated** when the a
 
 **3.4** When the client is authorized, a `request ID` number is randomly generated to keep track of the client's initial authorization request. As we will see in the next step, this request ID will protect the server from cross-site request forgery. Also, this `request ID` will get stored in the database alongside the specific client's information that sent the initial authorization request to receive the authorization code.
 
-**3.5** The client is now authorized, with its request ID safely stored in the authorization server's database. The next stage prompts the user to authorize the client on the user's behalf.
+**3.5** The client is now authorized, with its request ID safely stored in the authorization server's database. The next stage prompts the user to authorize the client on the user's behalf. This is done so the request ID from the form can be validated with the request ID from the initial request by the client.
 
 ## 4 User Decision
 
-The user is prompted to give the client the relevant permissions to access the protected resource and act on the user's behalf. This can be done through a form using a UI. Here is an example:</br>
+**4.1** After the client is authorized, the user is prompted to give the client the relevant permissions to access the protected resource and act on the user's behalf. This can be done through a form using a UI. Here is an example:</br>
 
 <fieldset>
 Approve this Client?</br>
@@ -76,4 +76,19 @@ ID: `test-client`
     <button type="submi">Submit</button>
 </fieldset>
 
-You can see that the user can give the client fine-grained permissions by providing the client `read`, `write`, or `delete` permissions. These permissions are added in the `scope` section when the token is issued in later steps.
+**4.2** You can see that the user can give the client fine-grained permissions by providing the client with read, write, or delete permissions. These permissions are added in the scope section when the token is issued in later steps. The user can approve or reject the client who requested to be authorized and act on behalf of the user. After clicking the `Submit` button, an API request is typically sent to the endpoint path `/approve` on the authorization server.
+
+**4.3** The `request ID` from the request in the previous section is embedded into this form in the background. So when the user clicks on Submit, the request ID is embedded into the API call to `/approve` in the authorization server.
+
+## 5 Processing the User Decision
+
+**5.1** If the user **rejects** the client, this means the user has denied access to an otherwise valid client. The authorization server now has the responsibility to tell the client that the user has rejected its authorization request. This can be done the same way as the client communicated with the authorization server. The authorization server will take a URL hosted by the client, add a few special query parameters, and redirect the user to that location. The URL that is hosted by the client, which the authorization server can use is known as the `redirect URI`. The authorization server sends back an error message to the `redirect URI`with the message `error: access_denied`.
+
+**5.2** This is why the client's `redirect URI` is needed. Also, this is why the authorization server validated the client's `redirect URI` against the existing client information in the authorization server's database when the initial authorization request arrived by the client.</br>
+
+**5.3** If the user has **approved** the client, then this means the user allows the client to act on their behalf.</br>
+When the `/approve` is called with `approve`, the first step is to check what kind of response the client seeks. The HTTP `response_type` should be `code`. If not, error is sent to the `redirect URI`.</br>
+The second step is to generate the authorization code and save it into the database because the authorization code will need to be referenced by the authorization server for later steps as we will see.</br>
+Finally, the third step is to send back the authorization code, and the `scope` (if provided by the client in the initial authorization request) to the client through the client's `redirect URI` and hand back control to the client. The authorization server is now fully prepared for the next step in the OAuth 2.0 authorization code grant type flow.
+
+## 6 Issuing a Token
