@@ -92,3 +92,38 @@ The second step is to generate the authorization code and save it into the datab
 Finally, the third step is to send back the authorization code, and the `scope` (if provided by the client in the initial authorization request) to the client through the client's `redirect URI` and hand back control to the client. The authorization server is now fully prepared for the next step in the OAuth 2.0 authorization code grant type flow.
 
 ## 6 Issuing a Token
+
+**6.1** At this point the client is now in control and has the authorization code that was received from the front-channel by the authorization server. The next step is to request an authorization token by sending a `POST` request to the `/authorize` endpoint of authorization server. The client can seend the code either in the header or the form body. Well behaved authorization servers would accept either methods but not both at the same time.
+
+**6.2** When the `/authorize` endpoint is called, the authorization server will validate the following in order by comparing the incoming data from the client to what is already stored in the authorization server's database:
+
+- The client ID
+- The client secret
+- The authorization code
+
+:::note
+Once the authorization code is validated, it is saved inside a variable at runtime and is deleted from the database. This is to prevent the use of a stolen authorization code and err on the side of caution.
+:::
+
+**6.3** When all the relevant data is validated, the next step is to check if the `grant_type` is set to `authorization_code` in the body of the `POST` request sent by the client. Since the authorization server in this case only supports the authorization code flow grant type, it is important to check.
+
+**6.4** If the authorization server does find the authorization code grant, the authorization server then needs to generate an **authorization token**. OAuth 2.0 is famously silent about what is inside an authorization token. It is up to you to add whatever content you want inside the authorization token. For example, you can create a JWT token. But for this case, we will keep things simple and generate a random string, then store it in the database.
+
+**6.5** Now the authorization server can finally send the token back to the client in the form of a JSON object that includes the authorization token. The JSON object should also include how the protected resource can use the authorization token. The usage method of the authorization token can be communicated by specifying the type of the authorization token. In this case, the authorization server sends back a `Bearer` token:
+
+```JSON
+{
+  "access_toke": "lRQUChwvWf",
+  "token_type": "Bearer"
+}
+```
+
+**6.7** At this point, we have stepped through a simple but fully functioning authorization server:
+
+- Authenticating clients
+- Prompting users for authorization
+- Issuing randomized bearer tokens using the authorization code flow.
+
+Nice! :rocket:
+
+The next steps can be seen as optional added features to the authorization server.
