@@ -8,16 +8,21 @@ tags: ['OAuth Series']
 
 ## 1 Introduction
 
-**1.1** In this section, there will be a deep dive into the Authorization server. An authorization server that supports the authorization code grant type has the following features:
+**1.1** In this section, there will be a deep dive into the Authorization server.
+
+The authorization server that will be discussed supports the authorization code grant type has the following features:
 
 - Registers clients.
-- Performs the delegation action core to OAuth.
 - Issues tokens to clients.
+- Assigns a scope to an issued token.
+- Issues refresh tokens to clients.
 - Authenticates users.
 
 Because of the vast amount of features the authorization server must support, it is arguably the most complex component in the OAuth ecosystem.
 
-**1.2** In the OAuth protocol, most complexity is pushed to the authorization server because authorization servers are the fewest in number. This means there are many more clients than protected resources, and there are many more protected resources than authorization servers.
+**1.2** In the OAuth protocol, most complexity is pushed to the authorization server because authorization servers are the fewest in number. This means there are many more clients than protected resources, and there are many more protected resources than authorization servers. As can be seen in figure 1.3.
+
+![showing number of OAuth entities](../images/size.png 'Figure 1.3 - Shows the difference in number between the OAuth entities.')
 
 ## 2 Registering a Client
 
@@ -25,18 +30,16 @@ Because of the vast amount of features the authorization server must support, it
 
 **2.2** Once the client IDs are defined, the authorization server generates a client secret for each client. This secret is also stored in the database for production-level authorization servers.
 
-**2.3** The final step in registering a client is to define a redirect URI. Unlike the client ID and the client secret, the authorization server does not generate the redirect URI. The client provides the redirect URI.
+**2.3** The final step in registering a client is to define a redirect URI. Unlike the client ID and the client secret, the authorization server does not generate the redirect URI. The redirect URI is defined by the client and manually entered into the authorization server.
 
 At the end of the client registration process, the authorization server would have a client object like this:
 
-```javascript
-var clients = [
-  {
-    client_id: 'oauth-client-1',
-    client_secret: 'oauth-client-secret-1',
-    redirect_uris: ['http://client-server:9000/callback'],
-  },
-]
+```JSON
+{
+  "client_id": "oauth-client-1",
+  "client_secret": "oauth-client-secret-1",
+  "redirect_uris": ["http://client-server:9000/callback"],
+}
 ```
 
 ## 3 Authorizing a Client
@@ -45,19 +48,15 @@ var clients = [
 
 **3.2** Firstly, when the `/authorize` endpoint is called, the authorization server finds out which client made the request. Typically, the client passes its identifier in the `client_id` parameter and its redirect URI in the `redirect_uri` parameter.
 
-**3.3** Once the client ID has been found, the authorization server must determine if the client exists in its database of predefined clients. If the client does not, an error is emitted such as `{error: 'Unknown client'}`. A classic check is to see if the `client_id` and `redirect_uri` match what is already stored in the database. Since only checking the `client_id` could lead to security gaps, all the current communication is being done on the public front channel.
+**3.3** Once the client ID has been found, the authorization server must determine if the client exists in its database of predefined clients. If the client does not, an error is emitted such as `{error: 'Unknown client'}`. A classic check is to see if the `client_id` and `redirect_uri` match what is already stored in the database. Since only checking the `client_id` could lead to security gaps, all the current communication is being done on the public front channel. This can be seen in figure 3.6.
 
 According to the OAuth specification, a client can register multiple redirect URIs for itself, allowing the client to be served from different URLs in different circumstances. This can complicate the client authorization process.
-
-:::warning
-:warning:</br>
-The OAuth 2.0 protocol does not care if the user is **authenticated** when the authorization server prompts the user to authorize the client. User authentication is entirely outside the scope of OAuth. This is why adequate care is required to supply user authentication at this stage.</br>
-:warning:
-:::
 
 **3.4** When the client is authorized, a `request ID` number is randomly generated to keep track of the client's initial authorization request. As we will see in the next step, this request ID will protect the server from cross-site request forgery. Also, this `request ID` will get stored in the database alongside the specific client's information that sent the initial authorization request to receive the authorization code.
 
 **3.5** The client is now authorized, with its request ID safely stored in the authorization server's database. The next stage prompts the user to authorize the client on the user's behalf. This is done so the request ID from the form can be validated with the request ID from the initial request by the client.
+
+![showing the client authorization](../images/client-authorization.drawio.png 'Figure 3.6 - Shows the client authorization flow.')
 
 ## 4 User Decision
 
@@ -70,15 +69,18 @@ ID: `test-client`
         <option value="1">Approve</option>
         <option value="2">Reject</option>
     </select><br>
-    <label><input type="checkbox"> read<br></label>
-    <label><input type="checkbox"> write<br></label>
-    <label><input type="checkbox"> delete<br></label>
     <button type="submi">Submit</button>
 </fieldset>
 
-**4.2** You can see that the user can give the client fine-grained permissions by providing the client with read, write, or delete permissions. These permissions are added in the scope section when the token is issued in later steps. The user can approve or reject the client who requested to be authorized and act on behalf of the user. After clicking the `Submit` button, an API request is typically sent to the endpoint path `/approve` on the authorization server.
+**4.2** The user can approve or reject the client who requested to be authorized and act on behalf of the user. After clicking the `Submit` button, an API request is typically sent to the endpoint path `/approve` on the authorization server.
 
-**4.3** The `request ID` from the request in the previous section is embedded into this form in the background. So when the user clicks on Submit, the request ID is embedded into the API call to `/approve` in the authorization server.
+:::warning
+:warning:</br>
+The OAuth 2.0 protocol does not care if the user is **authenticated** when the authorization server prompts the user to authorize the client. User authentication is entirely outside the scope of OAuth. This is why adequate care is required to supply user authentication at this stage.</br>
+:warning:
+:::
+
+**4.3** The `request ID` from the request in the previous section is embedded into this form in the background. So when the user clicks on Submit, the `request ID` is embedded into the API call to`/approve` in the authorization server.
 
 ## 5 Processing the User Decision
 
@@ -127,3 +129,20 @@ Once the authorization code is validated, it is saved inside a variable at runti
 Nice! :rocket:
 
 The next steps can be seen as optional added features to the authorization server.
+
+## Scope
+
+<fieldset>
+Approve this Client?</br>
+ID: `test-client`
+    <select>
+        <option value="1">Approve</option>
+        <option value="2">Reject</option>
+    </select><br>
+    <label><input type="checkbox"> read<br></label>
+    <label><input type="checkbox"> write<br></label>
+    <label><input type="checkbox"> delete<br></label>
+    <button type="submi">Submit</button>
+</fieldset>
+
+You can see that the user can give the client fine-grained permissions by providing the client with read, write, or delete permissions. These permissions are added in the scope section when the token is issued in later steps.
