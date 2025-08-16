@@ -8,6 +8,8 @@ tags: ['OAuth Series']
 
 ## 1 Introduction
 
+<video src="https://github.com/user-attachments/assets/0caebe87-8d06-48d8-ac72-71fc5e3ad76c" controls autoplay loop muted></video>
+
 **1.1** In this section, there will be a deep dive into the Authorization server.
 
 The authorization server that will be discussed supports the authorization code grant type has the following features:
@@ -76,11 +78,19 @@ ID: `test-client`
 
 :::warning
 :warning:</br>
-The OAuth 2.0 protocol does not care if the user is **authenticated** when the authorization server prompts the user to authorize the client. User authentication is entirely outside the scope of OAuth. This is why adequate care is required to supply user authentication at this stage.</br>
+The OAuth 2.0 protocol does not care if the user is **authenticated** when the authorization server prompts the user to authorize the client. User authentication is entirely outside the scope of OAuth 2.0. This is why adequate care is required to supply user authentication at this stage.</br>
 :warning:
 :::
 
-**4.3** The `request ID` from the request in the previous section is embedded into this form in the background. So when the user clicks on Submit, the `request ID` is embedded into the API call to`/approve` in the authorization server.
+**4.3** The `request ID` from the request in the previous section is embedded into this form in the background. So when the user clicks on Submit, the `request ID` is embedded into the API call to`/approve` in the authorization server. Here is the request object that is sent to the `/approve` endpoint path:
+
+```JSON
+{
+  "client_id": "oauth-client-1",
+  "client_secret": "oauth-client-secret-1",
+  "redirect_uris": ["http://client-server:9000/callback"],
+}
+```
 
 ## 5 Processing the User Decision
 
