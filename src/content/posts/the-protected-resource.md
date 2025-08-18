@@ -3,8 +3,8 @@ title: 'Part 2 - The OAuth Protected Resource'
 published: 2025-07-31
 draft: false
 description: 'Learning about the protect resource from the OAuth authorization grant type'
-tags: ['OAuth Simplified']
-series: 'OAuth Series'
+tags: ['OAuth']
+series: 'OAuth Simplified'
 ---
 
 This is a deep dive into the inner workings of a Protected Resource that an OAuth client can call.
