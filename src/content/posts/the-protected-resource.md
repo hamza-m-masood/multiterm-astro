@@ -1,9 +1,10 @@
 ---
-title: "Part 2 - The OAuth Protected Resource"
+title: 'Part 2 - The OAuth Protected Resource'
 published: 2025-07-31
 draft: false
-description: "Learning about the protect resource from the OAuth authorization grant type"
-tags: ["OAuth Series"]
+description: 'Learning about the protect resource from the OAuth authorization grant type'
+tags: ['OAuth']
+series: 'OAuth Series'
 ---
 
 This is a deep dive into the inner workings of a Protected Resource that an OAuth client can call.
@@ -11,6 +12,7 @@ This is a deep dive into the inner workings of a Protected Resource that an OAut
 ## Parsing the Token
 
 **1** The first step is for the protected resource to parse the authorization token. The authorization token is sent to the protected resource as a Bearer token. According to the [OAuth bearer token usage specification](https://tools.ietf.org/html/rfc6750), the bearer token can be passed to the protected resource in 3 different ways:
+
 - The HTTP Authorization header
 - Inside a form-encode POST body
 - A query parameter
@@ -20,14 +22,15 @@ This is a deep dive into the inner workings of a Protected Resource that an OAut
 ## Validating the Token
 
 **1** To simplify things, we will assume that the authorization server and the protected resource share the same database. When the authorization server creates a new token, the authorization server will store the token in the shared database.</br>
-Then, when a protected resource receives a token from a client, the protected resource can look up the shared database to validate the token. 
+Then, when a protected resource receives a token from a client, the protected resource can look up the shared database to validate the token.
 
 **2** For example, if the authorization server is using a NoSQL database, then the stored JSON object would look like this with the scope and client who requested the token:
+
 ```json
 {
-"access_token": "s9nR4qv7qVadTUssVD5DqA7oRLJ2xonn",
-"clientId": "oauth-client-1",
-"scope": ["foo"]
+  "access_token": "s9nR4qv7qVadTUssVD5DqA7oRLJ2xonn",
+  "clientId": "oauth-client-1",
+  "scope": ["foo"]
 }
 ```
 
@@ -43,12 +46,13 @@ The answer lies in the authorization token. The authorization token has all the 
 
 ```json
 {
-"access_token": "s9nR4qv7qVadTUssVD5DqA7oRLJ2xonn",
-"clientId": "oauth-client-1",
-"scope": ["foo"],
-"user": "Lisa"
+  "access_token": "s9nR4qv7qVadTUssVD5DqA7oRLJ2xonn",
+  "clientId": "oauth-client-1",
+  "scope": ["foo"],
+  "user": "Lisa"
 }
 ```
 
 ## Other Access Controls
+
 As mentioned above, accessing the user's name from the authorization token is just one method among many for controlling access to a protected resource. This flexibility can occur because OAuth stays out of the decision-making process of granting access and acts as a carrier of authorization information by using tokens and scopes. It is up to the protected resource what it wants to do with the information the OAuth authorization flow provides.

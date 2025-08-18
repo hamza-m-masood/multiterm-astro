@@ -3,7 +3,8 @@ title: 'Part 3 - The OAuth Authorization Server'
 published: 2025-08-01
 draft: false
 description: 'Learning about the OAuth Authorization Server from the authorization grant type'
-tags: ['OAuth Series']
+tags: ['OAuth']
+series: 'OAuth Series'
 ---
 
 ## 1 Introduction
