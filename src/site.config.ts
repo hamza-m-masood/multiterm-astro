@@ -11,6 +11,7 @@ const config: SiteConfig = {
   // The author of the site, used in the footer, SEO, and RSS feed.
   author: 'Hamza Masood',
   // Keywords for SEO, used in the meta tags.
+  // Keywords for SEO, used in the meta tags.
   tags: ['Astro', 'Terminal', 'Theme', 'MultiTerm', 'stelcodes'],
   // Path to the image used for generating social media previews.
   // Needs to be a square JPEG file due to limitations of the social card generator.
@@ -20,7 +21,12 @@ const config: SiteConfig = {
   // To change this see src/styles/global.css and import a different font.
   font: 'JetBrains Mono Variable',
   // For pagination, the number of posts to display per page.
-  pageSize: 5,
+  // The homepage will display half this number in the "Latest Posts" section.
+  pageSize: 6,
+  // Whether Astro should resolve trailing slashes in URLs or not.
+  // This value is used in the astro.config.mjs file and in the "Search" component to make sure pagefind links match this setting.
+  // It is not recommended to change this, since most links existing in the site currently do not have trailing slashes.
+  trailingSlashes: false,
   // The navigation links to display in the header.
   navLinks: [
     {
@@ -132,35 +138,19 @@ const config: SiteConfig = {
   // Take the values from the generated script tag at https://giscus.app and fill them in here.
   // If you don't want to use Giscus, set this to undefined.
   giscus: {
-    repo: 'hamza-m-masood/multiterm-astro/discussions',
+    repo: 'hamza-m-masood/multiterm-astro',
     repoId: 'R_kgDOPSQyAA',
     category: 'Giscus',
     categoryId: 'DIC_kwDOPSQyAM4CuarU',
     reactionsEnabled: true, // Enable reactions on post itself
-  },
-  // Configuration for Giscus comments.
-  // To set up Giscus, follow the instructions at https://giscus.app/
-  // You'll need a GitHub repository with discussions enabled and the Giscus app installed.
-  // Take the values from the generated script tag at https://giscus.app and fill them in here.
-  // If you don't want to use Giscus, set this to undefined.
-  giscus: {
-    repo: 'stelcodes/multiterm-astro',
-    repoId: 'R_kgDOPNnBig',
-    category: 'Giscus',
-    categoryId: 'DIC_kwDOPNnBis4CteOc',
-    reactionsEnabled: true, // Enable reactions on post itself
-  },
-  // Configuration for Giscus comments.
-  // To set up Giscus, follow the instructions at https://giscus.app/
-  // You'll need a GitHub repository with discussions enabled and the Giscus app installed.
-  // Take the values from the generated script tag at https://giscus.app and fill them in here.
-  // If you don't want to use Giscus, set this to undefined.
-  giscus: {
-    repo: 'stelcodes/multiterm-astro',
-    repoId: 'R_kgDOPNnBig',
-    category: 'Giscus',
-    categoryId: 'DIC_kwDOPNnBis4CteOc',
-    reactionsEnabled: true, // Enable reactions on post itself
+  },  // These are characters available for the character chat feature.
+  // To add your own character, add an image file to the top-level `/public` directory
+  // Make sure to compress the image to a web-friendly size (<100kb)
+  // Try using the excellent https://squoosh.app web app for creating small webp files
+  characters: {
+    owl: '/owl.webp',
+    unicorn: '/unicorn.webp',
+    duck: '/duck.webp',
   },
 }
 
