@@ -61,9 +61,6 @@ According to the OAuth specification, a client can register multiple redirect UR
 
 **3.4** When the client is authorized, a `request ID` number is randomly generated to keep track of the client's initial authorization request. As we will see in the next step, this request ID will protect the server from cross-site request forgery. Also, this `request ID` will get stored in the authorization server's database alongside the specific client's information that sent the initial authorization request to receive the authorization code.
 
-<video src="https://github.com/user-attachments/assets/39b07fcb-edb1-4b90-8726-8109ae549299" controls autoplay loop muted></video>
-Figure 3 - Shows the full client authorization flow.
-
 The database will have the following data at the end of this client verification flow:
 
 ```JSON
@@ -75,7 +72,7 @@ The database will have the following data at the end of this client verification
 }
 ```
 
-<video src="https://github.com/user-attachments/assets/b9955790-95ab-47f2-aba4-3c0e4972efe0" controls autoplay loop muted></video>
+<video src="https://github.com/user-attachments/assets/cac24de2-9bc2-45e3-8e5b-4fea99a53004" controls autoplay loop muted></video>
 Figure 3 - Shows the client authorization flow.
 
 **3.5** The client is now authorized, with its request ID safely stored in the authorization server's database. The next stage prompts the user to authorize the client on the user's behalf. This is done so the request ID from the form can be validated with the request ID from the initial request by the client.
