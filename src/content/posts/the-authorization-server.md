@@ -72,7 +72,7 @@ According to the OAuth specification, a client can register multiple redirect UR
 }
 ```
 
-<video src="https://github.com/user-attachments/assets/f6371323-9495-45ea-94a7-70d6be96d42c" controls autoplay loop muted></video>
+<video src="https://github.com/user-attachments/assets/b9955790-95ab-47f2-aba4-3c0e4972efe0" controls autoplay loop muted></video>
 Figure 3 - Shows the client authorization flow.
 
 **3.5** The client is now authorized, with its request ID safely stored in the authorization server's database. The next stage prompts the user to authorize the client on the user's behalf. This is done so the request ID from the form can be validated with the request ID from the initial request by the client.
