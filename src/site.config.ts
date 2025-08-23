@@ -144,14 +144,6 @@ const config: SiteConfig = {
     category: 'Giscus',
     categoryId: 'DIC_kwDOPSQyAM4CuarU',
     reactionsEnabled: true, // Enable reactions on post itself
-  },  // These are characters available for the character chat feature.
-  // To add your own character, add an image file to the top-level `/public` directory
-  // Make sure to compress the image to a web-friendly size (<100kb)
-  // Try using the excellent https://squoosh.app web app for creating small webp files
-  characters: {
-    owl: '/owl.webp',
-    unicorn: '/unicorn.webp',
-    duck: '/duck.webp',
   },
   // These are characters available for the character chat feature.
   // To add your own character, add an image file to the top-level `/public` directory
