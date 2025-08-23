@@ -47,7 +47,7 @@ At the end of the client registration process, the authorization server would ha
 
 **3.2** Firstly, when the `/authorize` endpoint is called, the authorization server finds out which client made the request. Typically, the client passes its identifier in the `client_id` parameter and its redirect URI in the `redirect_uri` parameter.
 
-**3.3** Once the client ID has been parsed by the authorization server, the authorization server must determine if the client exists in its database of predefined clients. If the client does not exist, an error is emitted such as `{error: 'Unknown client'}`. A classic check is to see if the `client_id` and `redirect_uri` that was passed in by the client, match what is already stored in the authorization server's database. Since only checking the `client_id` could lead to security gaps, all the current communication is being done on the public front channel. This can be seen in figure 3 with the client sending the following payload to the authorization server:
+**3.3** Once the client ID has been parsed by the authorization server, the authorization server must determine if the client exists in its database of predefined clients. If the client does not exist, an error is emitted such as `{error: 'Unknown client'}`. A classic check is to see if the `client_id` and `redirect_uri` that was passed in by the client, match what is already stored in the authorization server's database. Since only checking the `client_id` could lead to security gaps, all the current communication is being done on the public front channel. The client sends the following payload to the authorization server:
 
 ```JSON
 {
@@ -57,11 +57,14 @@ At the end of the client registration process, the authorization server would ha
 }
 ```
 
-<!-- ![showing the client authorization](../images/client-authorization.drawio.png 'Figure 3 - Shows the client authorization flow.') -->
-
 According to the OAuth specification, a client can register multiple redirect URIs for itself, allowing the client to be served from different URLs in different circumstances. This can complicate the client authorization process.
 
-**3.4** When the client is authorized, a `request ID` number is randomly generated to keep track of the client's initial authorization request. As we will see in the next step, this request ID will protect the server from cross-site request forgery. Also, this `request ID` will get stored in the authorization server's database alongside the specific client's information that sent the initial authorization request to receive the authorization code. At the end of this specific flow, the database will have the following data:
+**3.4** When the client is authorized, a `request ID` number is randomly generated to keep track of the client's initial authorization request. As we will see in the next step, this request ID will protect the server from cross-site request forgery. Also, this `request ID` will get stored in the authorization server's database alongside the specific client's information that sent the initial authorization request to receive the authorization code.
+
+<video src="https://github.com/user-attachments/assets/39b07fcb-edb1-4b90-8726-8109ae549299" controls autoplay loop muted></video>
+Figure 3 - Shows the full client authorization flow.
+
+The database will have the following data at the end of this client verification flow:
 
 ```JSON
 {
@@ -99,7 +102,7 @@ The OAuth 2.0 protocol does not care if the user is **authenticated** when the a
 :warning:
 :::
 
-**4.3** The `request ID` from the request in the previous section is embedded into this form in the background. So when the user clicks on Submit, the `request ID` is embedded into the API call to`/approve` in the authorization server. Here is the request object that is sent to the `/approve` endpoint path:
+**4.3** The `request ID` from the client in the previous section is embedded into this form in the background. So when the user clicks on Submit, the `request ID` is included into the API call to`/approve` in the authorization server. The authorization server will compare the request ID from the form to what is stored in it's database for added security. Here is the full object that is sent to the `/approve` endpoint path:
 
 ```JSON
 {
