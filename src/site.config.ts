@@ -1,15 +1,16 @@
-import type { SiteConfig } from '~/types'
+import type { SiteConfig } from '@types'
 
 const config: SiteConfig = {
   // Absolute URL to the root of your published site, used for generating links and sitemaps.
-  site: 'https://multiterm.stelclementine.com',
+  site: 'https://hamzamasood.dev',
   // The name of your site, used in the title and for SEO.
-  title: 'MultiTerm',
+  title: 'Hamza Masood',
   // The description of your site, used for SEO and RSS feed.
   description:
     'A coder-ready Astro blog theme with 59 of your favorite color schemes to choose from',
   // The author of the site, used in the footer, SEO, and RSS feed.
-  author: 'Katy Kookaburra',
+  author: 'Hamza Masood',
+  // Keywords for SEO, used in the meta tags.
   // Keywords for SEO, used in the meta tags.
   tags: ['Astro', 'Terminal', 'Theme', 'MultiTerm', 'stelcodes'],
   // Path to the image used for generating social media previews.
@@ -42,7 +43,7 @@ const config: SiteConfig = {
     },
     {
       name: 'GitHub',
-      url: 'https://github.com/stelcodes/multiterm-astro',
+      url: 'https://github.com/hamza-m-masood',
       external: true,
     },
   ],
@@ -123,41 +124,13 @@ const config: SiteConfig = {
       'vitesse-dark',
       'vitesse-light',
     ],
-    // Optional overrides for specific themes to customize colors.
-    // Their values can be either a literal color (hex, rgb, hsl) or another theme key.
-    // See themeKeys list in src/types.ts for available keys to override and reference.
-    overrides: {
-      // Improve readability for aurora-x theme
-      // 'aurora-x': {
-      //   background: '#292929FF',
-      //   foreground: '#DDDDDDFF',
-      //   warning: '#FF7876FF',
-      //   important: '#FF98FFFF',
-      //   note: '#83AEFFFF',
-      // },
-      // Make the GitHub dark theme a little cuter
-      // 'github-light': {
-      //   accent: 'magenta',
-      //   heading1: 'magenta',
-      //   heading2: 'magenta',
-      //   heading3: 'magenta',
-      //   heading4: 'magenta',
-      //   heading5: 'magenta',
-      //   heading6: 'magenta',
-      //   separator: 'magenta',
-      //   link: 'list',
-      // },
-    },
   },
   // Social links to display in the footer.
   socialLinks: {
-    github: 'https://github.com/stelcodes/multiterm-astro',
-    mastodon: 'https://github.com/stelcodes/multiterm-astro',
-    email: 'https://github.com/stelcodes/multiterm-astro',
-    linkedin: 'https://github.com/stelcodes/multiterm-astro',
-    bluesky: 'https://github.com/stelcodes/multiterm-astro',
-    twitter: 'https://github.com/stelcodes/multiterm-astro',
-    rss: true, // Set to true to include an RSS feed link in the footer
+    github: 'https://github.com/hamza-m-masood',
+    linkedin: 'https://www.linkedin.com/in/hamza-m-masood/',
+    bluesky: 'https://bsky.app/profile/hamzamasood.bsky.social',
+    twitter: 'https://x.com/hamzamasoodx',
   },
   // Configuration for Giscus comments.
   // To set up Giscus, follow the instructions at https://giscus.app/
@@ -166,11 +139,19 @@ const config: SiteConfig = {
   // IMPORTANT: Update giscus.json in the root of the project with your own website URL
   // If you don't want to use Giscus, set this to undefined.
   giscus: {
-    repo: 'stelcodes/multiterm-astro',
-    repoId: 'R_kgDOPNnBig',
+    repo: 'hamza-m-masood/multiterm-astro',
+    repoId: 'R_kgDOPSQyAA',
     category: 'Giscus',
-    categoryId: 'DIC_kwDOPNnBis4CteOc',
+    categoryId: 'DIC_kwDOPSQyAM4CuarU',
     reactionsEnabled: true, // Enable reactions on post itself
+  },  // These are characters available for the character chat feature.
+  // To add your own character, add an image file to the top-level `/public` directory
+  // Make sure to compress the image to a web-friendly size (<100kb)
+  // Try using the excellent https://squoosh.app web app for creating small webp files
+  characters: {
+    owl: '/owl.webp',
+    unicorn: '/unicorn.webp',
+    duck: '/duck.webp',
   },
   // These are characters available for the character chat feature.
   // To add your own character, add an image file to the top-level `/public` directory
