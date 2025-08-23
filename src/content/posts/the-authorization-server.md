@@ -111,10 +111,17 @@ The OAuth 2.0 protocol does not care if the user is **authenticated** when the a
 
 ## 5 Processing the User Decision
 
+:::owl
+So, what happens if the user rejects the client?
+:::
+
 **5.1** If the user **rejects** the client, this means the user has denied access to an otherwise valid client. The authorization server now has the responsibility to tell the client that the user has rejected its authorization request. This can be done the same way as the client communicated with the authorization server. The authorization server will take a URL hosted by the client, add a few special query parameters, and redirect the user to that location. The URL that is hosted by the client, which the authorization server can use is known as the `redirect URI`. The authorization server sends back an error message to the `redirect URI`with the message `error: access_denied`.
 
 **5.2** This is why the client's `redirect URI` is needed. Also, this is why the authorization server validated the client's `redirect URI` against the existing client information in the authorization server's database when the initial authorization request arrived by the client.</br>
 
+:::owl
+Hmm.. Interesting! What happens if the user approves the client?
+:::
 **5.3** If the user has **approved** the client, then this means the user allows the client to act on their behalf.</br>
 When the `/approve` is called with `approve`, the first step is to check what kind of response the client seeks. The HTTP `response_type` should be `code`. If not, error is sent to the `redirect URI`.</br>
 The second step is to generate the authorization code and save it into the database because the authorization code will need to be referenced by the authorization server for later steps as we will see.</br>
