@@ -10,7 +10,16 @@ series: 'OAuth Simplified'
 ## 1 Introduction
 
 :::me
-In this section, there will be a deep dive into the Authorization server.
+In this section, there will be a deep dive into the OAuth Authorization server.
+:::
+
+:::owl
+Great! I hope I learn a lot.
+
+:::
+
+:::strongme
+I'm sure you will. Let's do this!
 :::
 
 The authorization server that will be discussed supports the authorization code grant type has the following features:

@@ -154,6 +154,9 @@ const config: SiteConfig = {
     unicorn: '/unicorn.webp',
     duck: '/duck.webp',
     me: '/me.webp',
+    equationme: '/equationme.webp',
+    magnifyingglassme: '/magnifyingglassme.webp',
+    strongme: '/strongme.webp',
   },
 }
 
