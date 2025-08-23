@@ -153,6 +153,7 @@ const config: SiteConfig = {
     owl: '/owl.webp',
     unicorn: '/unicorn.webp',
     duck: '/duck.webp',
+    me: '/me.webp',
   },
 }
 

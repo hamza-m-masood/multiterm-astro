@@ -9,7 +9,9 @@ series: 'OAuth Simplified'
 
 ## 1 Introduction
 
-**1.1** In this section, there will be a deep dive into the Authorization server.
+:::me
+In this section, there will be a deep dive into the Authorization server.
+:::
 
 The authorization server that will be discussed supports the authorization code grant type has the following features:
 
