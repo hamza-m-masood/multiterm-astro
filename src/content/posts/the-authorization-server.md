@@ -13,7 +13,7 @@ series: 'OAuth Simplified'
 In this section, there will be a deep dive into the OAuth Authorization server.
 :::
 
-:::owl
+:::joyfulDuck
 Great! I hope I learn a lot.
 
 :::

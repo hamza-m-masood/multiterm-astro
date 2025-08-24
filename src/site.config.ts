@@ -157,6 +157,7 @@ const config: SiteConfig = {
     equationme: '/equationme.webp',
     magnifyingglassme: '/magnifyingglassme.webp',
     strongme: '/strongme.webp',
+    joyfulDuck: '/joyfulDuck.webp',
   },
 }
 
