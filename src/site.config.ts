@@ -159,6 +159,7 @@ const config: SiteConfig = {
     strongme: '/strongme.webp',
     joyfulDuck: '/joyfulDuck.webp',
     confusedDuck: '/confusedDuck.webp',
+    sweatingDuck: '/sweatingDuck.webp',
   },
 }
 

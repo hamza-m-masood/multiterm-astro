@@ -233,6 +233,52 @@ That was a lot of learning! I'm happy to see the entire flow of a basic OAuth au
 
 ## Scope
 
+Scopes represent a subset of access rights related to a specific OAuth delegation.
+
+:::sweatingDuck
+That sounds really confusing!!
+:::
+
+:::me
+Let's explain this statement further.
+:::
+
+Scopes are represented as strings in an OAuth protocol. For example, it was explained in the [Registering a Client](./the-authorization-server#2-registering-a-client) section that the client object is stored in the database. With the addition of scopes, we will predefine what scopes the client is allowed to access in the protected resource, as you can see in the bottom of the below JSON object.
+
+Object stored in the authorization server database:
+
+```JSON
+{
+  "client_id": "oauth-client-1",
+  "client_secret": "oauth-client-secret-1",
+  "redirect_uris": ["http://client-server:9000/callback"],
+  "scope": "inventory cart"
+}
+```
+
+This means, when the client requests authorization, the client will only get access to the inventory and the cart section of the protected resource, and will not get access to other sections such as the finance, or admin section. Also, when the client sends the payload for authorization, (as was talked about in the [authorizing a client section](the-authorization-server#3-authorizing-a-client)) the client can ask for a subset of it's pre-allocated scopes. For example, the client can request for access to just the inventory and not the cart.
+
+Body of the `POST` request when a client quries the `/authorize` endpoint to get authorized:
+
+```JSON
+{
+  "client_id": "oauth-client-1",
+  "client_secret": "oauth-client-secret-1",
+  "redirect_uris": ["http://client-server:9000/callback"],
+  scope: "inventory"
+}
+```
+
+As you might have noticed this member in the JSON object is a space separated list of strings. Each word in the string represents a specific OAuth scope.
+
+:::confusedDuck
+Why aren't scopes treated as arrays in the JSON object? Arrays are much easier to handle.
+:::
+
+Good question! The OAuth working group thought that it would be much easier to concatenate the scopes into a space separated string because HTTP forms don't have a good way of representing complex structures such as arrays and objects. The scope needs to pass through as a query parameter through the fornt-channel so the scope needs to be encoded somehow. This is why a string was picked. Also, according to the OAuth spec, it is not necessary to use JSON. Arrays might not be supported through another syntax.
+
+We talked about how the scope effects OAuth data when the client is registered and when the client is requesting authorization. But what aobut when the user decision is being made? Have a look!
+
 <fieldset>
 Approve this Client?</br>
 ID: `test-client`
@@ -240,10 +286,11 @@ ID: `test-client`
         <option value="1">Approve</option>
         <option value="2">Reject</option>
     </select><br>
-    <label><input type="checkbox"> read<br></label>
-    <label><input type="checkbox"> write<br></label>
-    <label><input type="checkbox"> delete<br></label>
+    <label><input type="checkbox"> inventory<br></label>
+    <label><input type="checkbox"> cart<br></label>
     <button type="submi">Submit</button>
 </fieldset>
 
-You can see that the user can give the client fine-grained permissions by providing the client with read, write, or delete permissions. These permissions are added in the scope section when the token is issued in later steps.
+You can see that the user can give the client fine-grained permissions by providing the client with inventory and/or cart permissions. These permissions are added in the scope section when the token is issued in later steps.
+
+# Refresh Token
