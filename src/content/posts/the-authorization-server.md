@@ -227,6 +227,10 @@ Nice! :rocket:
 
 The next steps can be seen as optional added features to the authorization server.
 
+:::joyfulDuck
+That was a lot of learning! I'm happy to see the entire flow of a basic OAuth authorization server!
+:::
+
 ## Scope
 
 <fieldset>
