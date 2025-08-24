@@ -231,7 +231,7 @@ The next steps can be seen as optional added features to the authorization serve
 That was a lot of learning! I'm happy to see the entire flow of a basic OAuth authorization server!
 :::
 
-## Scope
+## 7 Scope
 
 Scopes represent a subset of access rights related to a specific OAuth delegation.
 
@@ -293,4 +293,4 @@ ID: `test-client`
 
 You can see that the user can give the client fine-grained permissions by providing the client with inventory and/or cart permissions. These permissions are added in the scope section when the token is issued in later steps.
 
-# Refresh Token
+## 8 Refresh Token
