@@ -294,3 +294,23 @@ ID: `test-client`
 You can see that the user can give the client fine-grained permissions by providing the client with inventory and/or cart permissions. These permissions are added in the scope section when the token is issued in later steps.
 
 ## 8 Refresh Token
+
+It can be quite frustrating for the uesr to always get prompting with the authorization UI whenever the token expires. Like we saw in the [User Decision](./the-authorization-server#4-user-decision) section. Therefore the OAuth protocol is giving us a convenient feature called a refresh token. The refresh token is **only** used on the authorization server, by the client, to request a new authorization token when the current authorization token expires.
+
+:::warning
+The refresh token is only to be used when on the authorization server and **NOT** to access a protected resource. Only the authorization token must be used to access a protected resource. The refresh token is **never** sent to the authorization server.
+:::
+
+When refresh tokens are enabled in the OAuth authorization code grant type, then the authorization server will issue a refresh token alongside the authorization token. The client can use the refresh token to request a new authorization token from the authorization server whenever the authorization token expires.
+
+:::confusedDuck
+How does the client know when to request a refresh token? as we learned from previous sections, the client is not aware of when the authorization token expires.
+:::
+
+According to the OAuth specification, there is no way for the client to know. The client will just have to use the authorization token on the protected resource. If the client receives an error when using the authorization token then the client must request a new authorization token from the authorization server by using the refresh token.
+
+:::confusedDuck
+What if the refresh token expires?
+:::
+
+Then the client will have to fallback to the OAuth authorization code grant type and start the entire flow from the start, by also asking the user permission to authorize the client. This is why refresh tokens tend to have a longer lifespan for this not to occur as often.
