@@ -217,6 +217,18 @@ For example, you can create a JWT token. But for this case, we will keep things 
 }
 ```
 
+**6.6** The authorization server will store the authorization token in it's database alongside the rest of the client information:
+
+```JSON
+{
+  "client_id": "oauth-client-1",
+  "client_secret": "oauth-client-secret-1",
+  "redirect_uris": ["http://client-server:9000/callback"],
+  "request_id": 324,
+  "access_token": "lRQUChwvWf"
+}
+```
+
 **6.7** At this point, we have stepped through a simple but fully functioning authorization server:
 
 - Authenticating clients
@@ -265,7 +277,7 @@ Body of the `POST` request when a client quries the `/authorize` endpoint to get
   "client_id": "oauth-client-1",
   "client_secret": "oauth-client-secret-1",
   "redirect_uris": ["http://client-server:9000/callback"],
-  scope: "inventory"
+  "scope": "inventory"
 }
 ```
 
@@ -295,13 +307,26 @@ You can see that the user can give the client fine-grained permissions by provid
 
 ## 8 Refresh Token
 
-It can be quite frustrating for the uesr to always get prompting with the authorization UI whenever the token expires. Like we saw in the [User Decision](./the-authorization-server#4-user-decision) section. Therefore the OAuth protocol is giving us a convenient feature called a refresh token. The refresh token is **only** used on the authorization server, by the client, to request a new authorization token when the current authorization token expires.
+When the authorization token expires, the entire flow must be restarted from the beginning. It can be quite frustrating for the user to always get prompted with the authorization UI whenever the token expires. Like we saw in the [User Decision](./the-authorization-server#4-user-decision) section. Therefore the OAuth protocol gives us a convenient feature called a refresh token. The refresh token is **only** used on the authorization server, by the client, to request a new authorization token when the current authorization token expires.
 
 :::warning
 The refresh token is only to be used when on the authorization server and **NOT** to access a protected resource. Only the authorization token must be used to access a protected resource. The refresh token is **never** sent to the authorization server.
 :::
 
-When refresh tokens are enabled in the OAuth authorization code grant type, then the authorization server will issue a refresh token alongside the authorization token. The client can use the refresh token to request a new authorization token from the authorization server whenever the authorization token expires.
+When the refresh token feature is enabled, then the authorization server will issue a refresh token alongside the authorization token. The client can use the refresh token to request a new authorization token from the authorization server whenever the authorization token expires.
+
+We saw in the [Issuing a Token]() section that the authorization server will store the authorization token in it's database alongside the rest of the client information. The refresh token is also stored alongside the authorization token in the authorization server database:
+
+```JSON
+{
+  "client_id": "oauth-client-1",
+  "client_secret": "oauth-client-secret-1",
+  "redirect_uris": ["http://client-server:9000/callback"],
+  "request_id": 324,
+  "access_token": "lRQUChwvWf"
+  "refresh_token": "THQUYhVvPf"
+}
+```
 
 :::confusedDuck
 How does the client know when to request a refresh token? as we learned from previous sections, the client is not aware of when the authorization token expires.
