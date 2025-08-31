@@ -181,6 +181,13 @@ When the `/approve` is called with the `approve` message, the first step is to 
 The second step is to generate the authorization code and save it into the database because the authorization code will need to be referenced by the authorization server for later steps as we will see.</br>
 Finally, the third step is to send back the authorization code, and the `scope` (if provided by the client in the initial authorization request) to the client through the client's `redirect_uri` and hand back control to the client. The authorization server is now fully prepared for the next step in the OAuth 2.0 authorization code grant type flow.
 
+:::magnifyingglassme
+Here is a full video walkthrough of the user approving the client and the client receiving an authorization token..
+:::
+
+<video src="https://github.com/user-attachments/assets/124be2b2-9dde-41a9-bc27-b98e43670810
+" controls autoplay loop muted></video>
+
 ## 6 Issuing a Token
 
 **6.1** At this point the client is now in control and has the **authorization code** that was received from the front-channel by the authorization server. The next step is to request an **authorization token** by sending a `POST` request to the `/authorize` endpoint of authorization server. The client can send the **authorization code** either in the header or the form body. Well behaved authorization servers would accept either methods but not both at the same time.
@@ -191,7 +198,7 @@ The client will send the following payload to the `/authorize` endpoint of the a
 {
   "client_id": "oauth-client-1",
   "client_secret": "oauth-client-secret-1",
-  "authorization_code": 45261
+  "authorization_code": 45261,
   "grant_type": "authorization_code"
 }
 ```
