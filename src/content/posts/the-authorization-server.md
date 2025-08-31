@@ -70,7 +70,13 @@ At the end of the client registration process, the authorization server would ha
 
 There could be many objects like this and all of them would be stored on the database of the authorization server. Notice the `redirect_uris` value is an array type. This is because a client can have multiple redirect URIs. This will be discussed further down the article.
 
-## 3 Authorizing a Client
+:::magnifyingglassme
+Here is a full video walkthrough of registering a client.
+:::
+
+<video src="https://github.com/user-attachments/assets/79b22b00-d629-4c08-9118-075a6fc942ee" controls autoplay loop muted></video>
+
+## Authorizing a Client
 
 <!-- TODO: Create a blog for front-channel and back-channel communcation -->
 
