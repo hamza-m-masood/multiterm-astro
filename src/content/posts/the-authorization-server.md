@@ -84,15 +84,15 @@ Here is a full video walkthrough of registering a client.
 Our authorization server is now ready to accept client authorization requests.
 :::
 
-**3.1** As discussed, the authorization server needs to authorize the client on behalf of the user so the client can receive an authorization code. This communication is done over the front-channel, which needs to be reachable by the user's browser. Since most authorization servers are web servers, the authorization endpoint typically has the `/authorize` path and is always a `GET` request.
+As discussed, the authorization server needs to authorize the client on behalf of the user so the client can receive an authorization code. This communication is done over the front-channel, which needs to be reachable by the user's browser. Since most authorization servers are web servers, the authorization endpoint typically has the `/authorize` path and is always a `GET` request.
 
 :::me
 Let's say a test client is trying to get authorized from our authorization server. The following flow will occur.
 :::
 
-**3.2** Firstly, when the test client calls the `/authorize` endpoint, the authorization server finds out which client made the request. Typically, the client passes its identifier in the `client_id` parameter and its redirect URI in the `redirect_uri` parameter.
+Firstly, when the test client calls the `/authorize` endpoint, the authorization server finds out which client made the request. Typically, the client passes its identifier in the `client_id` parameter and its redirect URI in the `redirect_uri` parameter.
 
-**3.3** Once the `client_id` has been parsed by the authorization server, the authorization server must determine if the client exists in its database of predefined clients. If the client does not exist, an error is emitted such as `{error: 'Unknown client'}`. A classic check is to see if the `client_id` and `redirect_uri` that was passed in by the client, match what is already stored in the authorization server's database. Since only checking the `client_id` could lead to security gaps. The check for the `redirect_uri` is highly recommended because all the current communication in this section is being done on the public front-channel, which can be easily tampered with.
+Once the `client_id` has been parsed by the authorization server, the authorization server must determine if the client exists in its database of predefined clients. If the client does not exist, an error is emitted such as `{error: 'Unknown client'}`. A classic check is to see if the `client_id` and `redirect_uri` that was passed in by the client, match what is already stored in the authorization server's database. Since only checking the `client_id` could lead to security gaps. The check for the `redirect_uri` is highly recommended because all the current communication in this section is being done on the public front-channel, which can be easily tampered with.
 
 The client sends the following payload to the authorization server:
 
@@ -107,7 +107,7 @@ The client sends the following payload to the authorization server:
 :::note
 According to the OAuth specification, a client can register multiple redirect URIs for itself, allowing the client to be served from different URLs in different circumstances. This is why the `redirect_uris` in the payload above is being treated as an array.
 :::
-**3.4** When the client is authorized, a `request_id` is randomly generated to keep track of the client's initial authorization request. As we will see in the next step, this `request_id` will protect the server from cross-site request forgery. Also, this `request_id` will get stored in the authorization server's database alongside the specific client's information that sent the initial authorization request to receive the authorization code.
+When the client is authorized, a `request_id` is randomly generated to keep track of the client's initial authorization request. As we will see in the next step, this `request_id` will protect the server from cross-site request forgery. Also, this `request_id` will get stored in the authorization server's database alongside the specific client's information that sent the initial authorization request to receive the authorization code.
 
 The database will have the following data at the end of this client verification flow:
 
@@ -127,7 +127,7 @@ Here is a full video walkthrough of the entire flow mentioned in this section
 <video src="https://github.com/user-attachments/assets/cac24de2-9bc2-45e3-8e5b-4fea99a53004" controls autoplay loop muted></video>
 Figure 3 - Shows the client authorization flow.
 
-**3.5** The client is now authorized, with its request ID safely stored in the authorization server's database. The next stage prompts the user to authorize the client on the user's behalf. This is done so the request ID from the form can be validated with the request ID from the initial request by the client.
+The client is now authorized, with its request ID safely stored in the authorization server's database. The next stage prompts the user to authorize the client on the user's behalf. This is done so the request ID from the form can be validated with the request ID from the initial request by the client.
 
 :::joyfulDuck
 Woohoo! Our external test client is now verified against the predefined set of clients in the authorization server's database! I'm excited to see what further steps we have in the OAuth authorization code grant type.
@@ -163,7 +163,7 @@ The OAuth 2.0 protocol does not care if the user is **authenticated** when the a
 }
 ```
 
-## 5 Processing the User Decision
+## Processing the User Decision
 
 :::confusedDuck
 So, what happens if the user rejects the client?
