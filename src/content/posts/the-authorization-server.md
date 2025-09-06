@@ -230,7 +230,7 @@ OAuth 2.0 is famously silent about what is inside an authorization token. It is 
 
 For example, you can create a JWT token. But for this case, we will keep things simple and generate a random string, then store it in the database.
 
-Now the authorization server can finally send the token back to the client in the form of a JSON object that includes the authorization token. The JSON object should also include how the protected resource can use the authorization token. The usage method of the authorization token can be communicated by specifying the type of the authorization token. In this case, the authorization server sends back a `Bearer` token type:
+Now the authorization server can finally send the token back to the client in the form of a JSON object that includes the authorization token. The JSON object should also include how the protected resource can use the authorization token. The usage method of the authorization token can be communicated by specifying the type of the authorization token. In this case, the authorization server sends back a `Bearer` token type::
 
 ```JSON
 {
