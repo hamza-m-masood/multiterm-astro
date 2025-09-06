@@ -351,7 +351,7 @@ We saw in the [Issuing a Token]() section that the authorization server will sto
 ```
 
 :::confusedDuck
-How does the client know when to request a refresh token? as we learned from previous sections, the client is not aware of when the authorization token expires.
+How does the client know when to request a refresh token? as we learned from previous sections, the client is not aware of when the authorization token expires.:
 :::
 
 According to the OAuth specification, there is no way for the client to know. The client will just have to use the authorization token on the protected resource. If the client receives an error when using the authorization token then the client must request a new authorization token from the authorization server by using the refresh token.
