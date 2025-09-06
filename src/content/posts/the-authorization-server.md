@@ -133,9 +133,9 @@ The client is now authorized, with its request ID safely stored in the authoriza
 Woohoo! Our external test client is now verified against the predefined set of clients in the authorization server's database! I'm excited to see what further steps we have in the OAuth authorization code grant type.
 :::
 
-## 4 User Decision
+## User Decision
 
-**4.1** After the client is authorized, the user is prompted to give the client the relevant permissions to access the protected resource and act on the user's behalf. This can be done through a form using a UI. Here is an example:</br>
+After the client is authorized, the user is prompted to give the client the relevant permissions to access the protected resource and act on the user's behalf. This can be done through a form using a UI. Here is an example:</br>
 
 <fieldset>
 Approve this Client?</br>
@@ -147,13 +147,13 @@ ID: `test-client`
     <button type="submi">Submit</button>
 </fieldset>
 
-**4.2** The user can approve or reject the client who requested to be authorized and act on behalf of the user. After clicking the `Submit` button, an API request is typically sent to the endpoint path `/approve` on the authorization server.
+The user can approve or reject the client who requested to be authorized and act on behalf of the user. After clicking the `Submit` button, an API request is typically sent to the endpoint path `/approve` on the authorization server.
 
 :::warning
 The OAuth 2.0 protocol does not care if the user is **authenticated** when the authorization server prompts the user to authorize the client. User authentication is entirely outside the scope of OAuth 2.0. This is why adequate care is required to supply user authentication at this stage.</br>
 :::
 
-**4.3** The `request ID` from the client in the previous section is embedded into this form in the background. So when the user clicks on Submit, the `request ID` is included into the API call to`/approve` in the authorization server. The authorization server will compare the request ID from the form to what is stored in it's database for added security. Here is the full object that is sent to the `/approve` endpoint path:
+The `request ID` from the client in the previous section is embedded into this form in the background. So when the user clicks on Submit, the `request ID` is included into the API call to`/approve` in the authorization server. The authorization server will compare the request ID from the form to what is stored in it's database for added security. Here is the full object that is sent to the `/approve` endpoint path:
 
 ```JSON
 {
@@ -163,22 +163,26 @@ The OAuth 2.0 protocol does not care if the user is **authenticated** when the a
 }
 ```
 
-## Processing the User Decision
+## Issuing The Authorization Code
 
 :::confusedDuck
 So, what happens if the user rejects the client?
 :::
 
-**5.1** If the user **rejects** the client, by calling `/approve` with the `reject` message, this means the user has denied access to an otherwise valid client. The authorization server now has the responsibility to tell the client that the user has rejected its authorization request. This can be done the same way as the client communicated with the authorization server. Meaning, the authorization server will take a URL hosted by the client, add a few special query parameters, and redirect the user to the endpoint defined by the client's `redirect_uri`. The URL that is hosted by the client, which the authorization server can use is known as the `redirect_uri`. The authorization server sends back an error message to the `redirect_uri` with the message `error: access_denied`.
+If the user **rejects** the client, by calling `/approve` with the `reject` message, this means the user has denied access to an otherwise valid client. The authorization server now has the responsibility to tell the client that the user has rejected its authorization request. This can be done the same way as the client communicated with the authorization server. Meaning, the authorization server will take a URL hosted by the client, add a few special query parameters, and redirect the user to the endpoint defined by the client's `redirect_uri`. The URL that is hosted by the client, which the authorization server can use is known as the `redirect_uri`. The authorization server sends back an error message to the `redirect_uri` with the message `error: access_denied`.
 
-**5.2** This is why the client's `redirect_uri` is needed. Also, this is why the authorization server validated the client's `redirect_uri` against the existing client information in the authorization server's database when the initial authorization request arrived by the client. So the authorization server knows that it is sending the user to an approved,verified address. And not an address that can be tampered with through the front-channel.
+This is why the client's `redirect_uri` is needed. Also, this is why the authorization server validated the client's `redirect_uri` against the existing client information in the authorization server's database when the initial authorization request arrived by the client. So the authorization server knows that it is sending the user to an approved,verified address. And not an address that can be tampered with through the front-channel.
 
 :::confusedDuck
 Hmm.. Interesting! Now I understand the purpose of the Redirect URI. What happens if the user approves the client?
 :::
-**5.3** If the user has **approved** the client, then this means the user allows the client to act on their behalf.</br>
-When the `/approve` is called with the `approve` message, the first step is to check what kind of response the client seeks. The HTTP `response_type` should be `code`. If not, error is sent to the `redirect_uri`.</br>
-The second step is to generate the authorization code and save it into the database because the authorization code will need to be referenced by the authorization server for later steps as we will see.</br>
+
+If the user has **approved** the client, then this means the user allows the client to act on their behalf.
+
+When the `/approve` is called with the `approve` message, the first step is to check what kind of response the client seeks. The HTTP `response_type` should be `code`. If not, error is sent to the `redirect_uri`.
+
+The second step is to generate the authorization code and save it into the database because the authorization code will need to be referenced by the authorization server for later steps as we will see.
+
 Finally, the third step is to send back the authorization code, and the `scope` (if provided by the client in the initial authorization request) to the client through the client's `redirect_uri` and hand back control to the client. The authorization server is now fully prepared for the next step in the OAuth 2.0 authorization code grant type flow.
 
 :::magnifyingglassme
@@ -188,9 +192,9 @@ Here is a full video walkthrough of the user approving the client and the client
 <video src="https://github.com/user-attachments/assets/124be2b2-9dde-41a9-bc27-b98e43670810
 " controls autoplay loop muted></video>
 
-## 6 Issuing a Token
+## Issuing The Authorization Token
 
-**6.1** At this point the client is now in control and has the **authorization code** that was received from the front-channel by the authorization server. The next step is to request an **authorization token** by sending a `POST` request to the `/authorize` endpoint of authorization server. The client can send the **authorization code** either in the header or the form body. Well behaved authorization servers would accept either methods but not both at the same time.
+At this point the client is now in control and has the **authorization code** that was received from the front-channel by the authorization server. The next step is to request an **authorization token** by sending a `POST` request to the `/authorize` endpoint of authorization server. The client can send the **authorization code** either in the header or the form body. Well behaved authorization servers would accept either methods but not both at the same time.
 
 The client will send the following payload to the `/authorize` endpoint of the authorization server.
 
@@ -203,7 +207,7 @@ The client will send the following payload to the `/authorize` endpoint of the a
 }
 ```
 
-**6.2** When the `/authorize` endpoint is called, the authorization server will validate the following in order by comparing the incoming data from the client to what is already stored in the authorization server's database:
+When the `/authorize` endpoint is called, the authorization server will validate the following in order by comparing the incoming data from the client to what is already stored in the authorization server's database:
 
 - The client ID
 - The client secret
@@ -213,9 +217,9 @@ The client will send the following payload to the `/authorize` endpoint of the a
 Once the authorization code is validated, it is saved inside a variable at runtime and is deleted from the database. This is to prevent the use of a stolen authorization code and err on the side of caution.
 :::
 
-**6.3** When all the relevant data is validated, the next step is to check if the `grant_type` is set to `authorization_code` in the body of the `POST` request sent by the client. Since the authorization server in this case only supports the authorization code flow grant type, it is important to check.
+When all the relevant data is validated, the next step is to check if the `grant_type` is set to `authorization_code` in the body of the `POST` request sent by the client. Since the authorization server in this case only supports the authorization code flow grant type, it is important to check.
 
-**6.4** If the authorization server does find the authorization code grant, the authorization server then needs to generate an **authorization token**.
+If the authorization server does find the authorization code grant, the authorization server then needs to generate an **authorization token**.
 :::confusedDuck
 What should be added inside the authorization token?
 :::
@@ -226,7 +230,7 @@ OAuth 2.0 is famously silent about what is inside an authorization token. It is 
 
 For example, you can create a JWT token. But for this case, we will keep things simple and generate a random string, then store it in the database.
 
-**6.5** Now the authorization server can finally send the token back to the client in the form of a JSON object that includes the authorization token. The JSON object should also include how the protected resource can use the authorization token. The usage method of the authorization token can be communicated by specifying the type of the authorization token. In this case, the authorization server sends back a `Bearer` token type:
+Now the authorization server can finally send the token back to the client in the form of a JSON object that includes the authorization token. The JSON object should also include how the protected resource can use the authorization token. The usage method of the authorization token can be communicated by specifying the type of the authorization token. In this case, the authorization server sends back a `Bearer` token type:
 
 ```JSON
 {
@@ -235,7 +239,7 @@ For example, you can create a JWT token. But for this case, we will keep things 
 }
 ```
 
-**6.6** The authorization server will store the authorization token in it's database alongside the rest of the client information:
+The authorization server will store the authorization token in it's database alongside the rest of the client information:
 
 ```JSON
 {
@@ -247,7 +251,7 @@ For example, you can create a JWT token. But for this case, we will keep things 
 }
 ```
 
-**6.7** At this point, we have stepped through a simple but fully functioning authorization server:
+At this point, we have stepped through a simple but fully functioning authorization server:
 
 - Authenticating clients
 - Prompting users for authorization
@@ -261,7 +265,7 @@ The next steps can be seen as optional added features to the authorization serve
 That was a lot of learning! I'm happy to see the entire flow of a basic OAuth authorization server!
 :::
 
-## 7 Scope
+## Scope
 
 Scopes represent a subset of access rights related to a specific OAuth delegation.
 
@@ -323,7 +327,7 @@ ID: `test-client`
 
 You can see that the user can give the client fine-grained permissions by providing the client with inventory and/or cart permissions. These permissions are added in the scope section when the token is issued in later steps.
 
-## 8 Refresh Token
+## Refresh Token
 
 When the authorization token expires, the entire flow must be restarted from the beginning. It can be quite frustrating for the user to always get prompted with the authorization UI whenever the token expires. Like we saw in the [User Decision](./the-authorization-server#4-user-decision) section. Therefore the OAuth protocol gives us a convenient feature called a refresh token. The refresh token is **only** used on the authorization server, by the client, to request a new authorization token when the current authorization token expires.
 
