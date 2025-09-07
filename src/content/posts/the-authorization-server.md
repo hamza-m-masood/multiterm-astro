@@ -74,7 +74,7 @@ There could be many objects like this and all of them would be stored on the dat
 Here is a full video walkthrough of registering a client.
 :::
 
-<video src="https://github.com/user-attachments/assets/79b22b00-d629-4c08-9118-075a6fc942ee" controls autoplay loop muted></video>
+<video src="https://github.com/user-attachments/assets/15bc412f-6eeb-4f01-94fa-94e496ed6d7a" controls autoplay loop muted></video>
 
 ## Authorizing a Client
 
@@ -124,7 +124,7 @@ The database will have the following data at the end of this client verification
 Here is a full video walkthrough of the entire flow mentioned in this section
 :::
 
-<video src="https://github.com/user-attachments/assets/cac24de2-9bc2-45e3-8e5b-4fea99a53004" controls autoplay loop muted></video>
+<video src="https://github.com/user-attachments/assets/80460093-3d01-4de9-9d9b-5d35727e5a31" controls autoplay loop muted></video>
 Figure 3 - Shows the client authorization flow.
 
 The client is now authorized, with its request ID safely stored in the authorization server's database. The next stage prompts the user to authorize the client on the user's behalf. This is done so the request ID from the form can be validated with the request ID from the initial request by the client.
@@ -163,8 +163,6 @@ The `request ID` from the client in the previous section is embedded into this f
 }
 ```
 
-## Issuing The Authorization Code
-
 :::confusedDuck
 So, what happens if the user rejects the client?
 :::
@@ -179,18 +177,27 @@ Hmm.. Interesting! Now I understand the purpose of the Redirect URI. What happen
 
 If the user has **approved** the client, then this means the user allows the client to act on their behalf.
 
-When the `/approve` is called with the `approve` message, the first step is to check what kind of response the client seeks. The HTTP `response_type` should be `code`. If not, error is sent to the `redirect_uri`.
+:::magnifyingglassme
+Here is a full video walkthrough of the user approving the client.
+:::
+
+<video src="https://github.com/user-attachments/assets/5d4828b7-4dbb-461b-a4fb-3b04e9df50c6" controls autoplay loop muted></video>
+Figure 4 - Shows the user decision flow
+
+## Issuing The Authorization Code
+
+When the `/approve` is called with the `approve` message by the user, the first step for the authorization server is to verify the type of response the client accepts. The HTTP `response_type` should be `code`. If not, error is sent to the `redirect_uri`.
 
 The second step is to generate the authorization code and save it into the database because the authorization code will need to be referenced by the authorization server for later steps as we will see.
 
 Finally, the third step is to send back the authorization code, and the `scope` (if provided by the client in the initial authorization request) to the client through the client's `redirect_uri` and hand back control to the client. The authorization server is now fully prepared for the next step in the OAuth 2.0 authorization code grant type flow.
 
 :::magnifyingglassme
-Here is a full video walkthrough of the user approving the client and the client receiving an authorization token..
+Here is a full video walkthrough of the authorization server sending the authorization code to the client.
 :::
 
-<video src="https://github.com/user-attachments/assets/124be2b2-9dde-41a9-bc27-b98e43670810
-" controls autoplay loop muted></video>
+<video src="https://github.com/user-attachments/assets/31d4e608-55b0-42f8-99e6-7145d3ebc77b" controls autoplay loop muted></video>
+Figure 4 - Shows the user decision flow
 
 ## Issuing The Authorization Token
 
@@ -214,12 +221,12 @@ When the `/authorize` endpoint is called, the authorization server will validate
 - The authorization code
 
 :::note
-Once the authorization code is validated, it is saved inside a variable at runtime and is deleted from the database. This is to prevent the use of a stolen authorization code and err on the side of caution.
+Once the **authorization code** is validated, it is saved inside a variable at runtime and is deleted from the database. This is to prevent the use of a stolen authorization code and err on the side of caution.
 :::
 
 When all the relevant data is validated, the next step is to check if the `grant_type` is set to `authorization_code` in the body of the `POST` request sent by the client. Since the authorization server in this case only supports the authorization code flow grant type, it is important to check.
 
-If the authorization server does find the authorization code grant, the authorization server then needs to generate an **authorization token**.
+If the authorization server does find the `grant_type` set to `authorization_code` in the body of the `POST` request, then the authorization server needs to generate an **authorization token**.
 :::confusedDuck
 What should be added inside the authorization token?
 :::
@@ -230,7 +237,7 @@ OAuth 2.0 is famously silent about what is inside an authorization token. It is 
 
 For example, you can create a JWT token. But for this case, we will keep things simple and generate a random string, then store it in the database.
 
-Now the authorization server can finally send the token back to the client in the form of a JSON object that includes the authorization token. The JSON object should also include how the protected resource can use the authorization token. The usage method of the authorization token can be communicated by specifying the type of the authorization token. In this case, the authorization server sends back a `Bearer` token type::
+Now the authorization server can finally send a payload back to the client in the form of a JSON object that includes the authorization token. The JSON object should also include how the protected resource can use the authorization token. The usage of the authorization token can be communicated by specifying the type of the authorization token. In this case, the authorization server sends back a `Bearer` token type:
 
 ```JSON
 {
