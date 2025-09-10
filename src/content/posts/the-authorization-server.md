@@ -360,4 +360,4 @@ According to the OAuth specification, there is no way for the client to know. Th
 What if the refresh token expires?
 :::
 
-Then the client will have to fallback to the OAuth authorization code grant type and start the entire flow from the start, by also asking the user permission to authorize the client. This is why refresh tokens tend to have a longer lifespan for this not to occur as often.
+T hen the client will have to fallback to the OAuth authorization code grant type and start the entire flow from the start, by also asking the user permission to authorize the client. This is why refresh tokens tend to have a longer lifespan for this not to occur as often.
