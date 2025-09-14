@@ -29,15 +29,13 @@ Let's map out the OAuth components in this example:
 
 The end goal is for Strava to be given access to your Facebook account in order to make posts. In other words, you as the user need to delegate authorization to the client (strava), so the client can access the protected resource (Facebook).
 
-![Showing the resource owner, client, auth server relationship](../images/intro-oauth-1.png 'Showing the resource owner, client, auth server relationship')
+![Showing the resource owner, client, protected resource relationship](../images/intro-oauth-1.png 'Showing the resource owner, client, protected resource relationship')
 
 ## Potential Solutions for Client Authorization
 
 Let's think of the most basic authorization setup in order for Strava to connect to your Facebook account. Strava asks you for the username and password of your Facebook account and connects on your behalf.
 
-```
-TODO: Picture of Strava connecting to Facebook using user's Facebook credentials
-```
+![You provide your password to Strava. Then Strava uses your password to publish posts.](../images/intro-oauth-2.png 'You provide your password to Strava. Then Strava uses your password to publish posts.')
 
 Although, there are many problems with this approach, the goal is achieved! Strava can now make posts on your behalf to your Facebook account! There are definitely areas of improvement in this setup. Let's look at the current challenges we face with this setup:
 
@@ -49,9 +47,7 @@ Yikes! By solving the connection problem, we seem to have made quite a mess!
 
 What if Strava could create a partnership with Facebook and get access to _all_ Facebook accounts by using a very secret password that is given by Facebook. This secret password would only allow Strava to make posts for users and nothing else. For example, Strava will not be able to send a Facebook friend a direct message on behalf of any user. Strava will _only_ be allowed to publish Facebook posts on behalf of any user.
 
-```
-TODO: Picture of Strava getting access to all Facebook accounts.
-```
+![Strava can post to any facebook account using it's all powerful token!](../images/intro-oauth-3.png "Strava can post to any facebook account using it's all powerful token!")
 
 As in the previous solution, the end goal is reached. Strava is now connected to Facebook and can public posts on your behalf. The benefit of this solution is that Strava will not have a need to ask for your password, or act on your behalf. Strava would just need to know your username and use it's all powerful, secret password given by Facebook to make a post on your behalf. Just like it can do for any other user. Although this approach solves some of the problems mentioned in the previous solution, there are still some glaring flaws:
 
@@ -63,9 +59,7 @@ Let's take this solution a little further!
 
 What if _you_ could provide a Facebook password (other than your own) to Strava that will allow Strava to _only_ post on your behalf and nothing else. For example _Strava_ will not be able to view your friends list because it only has just enough access to post on your behalf. Let's name this password that you will provide a `token`.
 
-```
-TODO: Picture of Strava using a password (token) to access Facebook
-```
+![The user gives Strava a special password that only allows for publishing posts on the resource owner's account](../images/intro-oauth-4.png "The user gives Strava a special password that only allows for publishing posts on the resource owner's account")
 
 This is looking much better than the very first solution of Strava replaying the user credentials to Facebook. Strava now only has access to posting on your behalf. You can revoke access to Strava at any time by changing the password that you provided Strava. Also, Strava does not have universal access to make posts for any user anymore. Although this is a good solution, it is still not optimal. Let's discuss the challenges we face with this setup:
 
