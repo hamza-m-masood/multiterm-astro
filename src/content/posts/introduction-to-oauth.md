@@ -70,18 +70,24 @@ We can still do better than this!
 
 What if we were able to have this token issued separately for each client and user combination to be used at a protected resource? What if there was a network protocol that allowed for the generation and secure distribution of these credentials? Now we are getting somewhere!
 
-## Delegating Authorization
+## Delegating Access
 
 The network protocol in question is called OAuth!
 Once again, the end goal is for the you to _delegate_ your authority of your Facebook account to Strava, so it can publish posts on your behalf. OAuth introduces another component into the solution called the _Authorization Server_.
 
-The Authorization Server establishes trust between itself and the protected resource (your Facebook account). For you to delegate your authorization of you Facebook to Strava, you will first login to Strava on you Strava account. You will then be sent to the authorization server. Once you are authenticated on the authorization server, you will be given a choice if you would like to delegate you authorization to Strava on the authorization server. The authorization server will tell you exactly what Strava will be able to do on your Facebook account. If you agree, the authorization server will send a special token to Strava called an _OAuth authorization token_ which will allow Strava to connect to your Facebook account and publish posts! You have successfully delegated your authorization of your Facebook to Strava,
+![Introducing the Authorization Server](../images/intro-oauth-5.png 'Introducing the Authorization Server')
+
+The Authorization Server establishes trust between itself and the protected resource (your Facebook account). The green line is the goal! To establish a connection between Strava and your Facebook account. In other words, the goal is to establish a connection between the client and the protected resource by delegating the user's access to the client.
+
+For you to delegate your authorization of you Facebook to Strava, you will first login to Strava on you Strava account. You will then be sent to the authorization server. Once you are authenticated on the authorization server, you will be given a choice if you would like to delegate you authorization to Strava on the authorization server. The authorization server will tell you exactly what Strava will be able to do on your Facebook account. If you agree, the authorization server will send a special token to Strava called an _OAuth authorization token_ which will allow Strava to connect to your Facebook account and publish posts! You have successfully delegated your authorization of your Facebook to Strava,
 
 Phew! That was a lot. This OAuth solution might be difficult to understand by simply reading through the previous paragraph, so let's see it in action through an animated diagram!
 
 ```
 create an animated diagram of the OAuth flow mentioned above.
 ```
+
+![Introducing the Authorization Server](../images/intro-oauth-test.png 'Introducing the Authorization Server')
 
 That is the entire OAuth flow at a very high level! If you reached this point and understood the concepts then that means you understand what OAuth is! Well done! :rocket:
 
