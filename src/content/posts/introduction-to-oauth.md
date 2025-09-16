@@ -43,9 +43,9 @@ Although, there are many problems with this approach, the goal is achieved! Stra
 - Facebook has no way of differentiating between you and Strava since Strava is using the same username and password that you are using to login.
 - Strava has stored your username and password on it's database for use in the future. So it does not have to notify you every time it will post on Facebook.
 
-Yikes! By solving the connection problem, we seem to have made quite a mess!
+Yikes! By solving the connection problem, we seem to have made quite a mess! We can do better!
 
-What if Strava could create a partnership with Facebook and get access to _all_ Facebook accounts by using a very secret password that is given by Facebook. This secret password would only allow Strava to make posts for users and nothing else. For example, Strava will not be able to send a Facebook friend a direct message on behalf of any user. Strava will _only_ be allowed to publish Facebook posts on behalf of any user.
+Here is another solution: what if Strava could create a partnership with Facebook and get access to _all_ Facebook accounts by using a very secret password that is given by Facebook. This secret password would only allow Strava to make posts for users and nothing else. For example, Strava will not be able to send a Facebook friend a direct message on behalf of any user. Strava will _only_ be allowed to publish Facebook posts on behalf of any user.
 
 ![Strava can post to any facebook account using it's all powerful token!](../images/intro-oauth-3.png "Strava can post to any facebook account using it's all powerful token!")
 
@@ -83,11 +83,23 @@ For you to delegate your authorization of you Facebook to Strava, you will first
 
 Phew! That was a lot. This OAuth solution might be difficult to understand by simply reading through the previous paragraph, so let's see it in action through an animated diagram!
 
-<video src="https://github.com/user-attachments/assets/995fac12-8116-48dd-9cd5-b7c178a761e4" controls autoplay loop muted></video>
+<video src="https://github.com/user-attachments/assets/4902572a-3f0c-46b0-9e54-57fd41e5b9e2" controls autoplay loop muted></video>
+
+## Enhancing Network Security
+
+There is a security risk with the flow mentioned above. The entire authorization flow is happening on the [front channel](https://beingcraftsman.com/2023/12/02/simple-guide-to-front-channel-and-back-channel-requests/), from the browser, which can be listened to by an attacker. In that case, an attacker can intercept the flow and grab the OAuth Authorization Token for malicious activities.
+
+To guard the authorization flow from attackers, OAuth has introduced another token called the `OAuth authorization code`. This will be passed totally through the back channel which is highly secure. If an attacker was intercepting the user's browser, the attacker would only be able to access the front channel requests, not back channel, so the attacker would not get access to the authorization code.
+
+Similar to the authorization code, the authorization token is also communicated through the back channel. This means that both the authorization code and the authorization token are treated as secret data that should not be shared.
+
+So how does the authorization code get used in the above mentioned flow?
+
+The authorization code is sent to the client from the authorization server, after the user approves the client.
 
 ```
 TODO: talk about:
-- authorization code
+- add animation introducing auth code
 - refresh token
 - scope
 ```
