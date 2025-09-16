@@ -86,7 +86,10 @@ Phew! That was a lot. This OAuth solution might be difficult to understand by si
 <video src="https://github.com/user-attachments/assets/995fac12-8116-48dd-9cd5-b7c178a761e4" controls autoplay loop muted></video>
 
 ```
-TODO: talk about authorization code
+TODO: talk about:
+- authorization code
+- refresh token
+- scope
 ```
 
 That is the entire OAuth flow at a very high level! If you reached this point and understood the concepts then that means you understand what OAuth is! Well done! :rocket:
