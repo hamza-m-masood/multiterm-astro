@@ -83,12 +83,7 @@ For you to delegate your authorization of you Facebook to Strava, you will first
 
 Phew! That was a lot. This OAuth solution might be difficult to understand by simply reading through the previous paragraph, so let's see it in action through an animated diagram!
 
-```
-create an animated diagram of the OAuth flow mentioned above.
-```
-
-![Introducing the Authorization Server](../images/intro-oauth-test.png 'Introducing the Authorization Server')
-
+<video src="https://github.com/user-attachments/assets/995fac12-8116-48dd-9cd5-b7c178a761e4" controls autoplay loop muted></video>
 That is the entire OAuth flow at a very high level! If you reached this point and understood the concepts then that means you understand what OAuth is! Well done! :rocket:
 
 In the next blog posts, we will dive deep into each OAuth component and discuss their inner workings.
