@@ -83,9 +83,9 @@ For you to delegate your authorization of you Facebook to Strava, you will first
 
 Phew! That was a lot. This OAuth solution might be difficult to understand by simply reading through the previous paragraph, so let's see it in action through an animated diagram!
 
-<video src="https://github.com/user-attachments/assets/1d7448aa-86a2-4bfa-a106-81f56f475f81" controls autoplay loop muted></video>
+<video src="https://github.com/user-attachments/assets/bee43c65-6d21-47dc-9959-220c186c6799" controls autoplay loop muted></video>
 
-![Diagram Legend](../images/legend.png)
+![Diagram Legend](../images/implicit-flow-legend.png)
 
 ## Enhancing Security
 
@@ -101,9 +101,12 @@ The authorization code is sent to the client from the authorization server, afte
 
 Once the client has the Authorization Code, the next step for the client is to request and Authorization Token from the Authorization Server. Once the client has the Authorization Token, the client can freely make Facebook posts for the specified user.
 
+<video src="https://github.com/user-attachments/assets/c4c9ecef-1b15-420c-957e-4b4639b52b9c" controls autoplay loop muted></video>
+
+![Diagram Legend](../images/authorization-code-legend.png)
+
 ```
 TODO: talk about:
-- add animation introducing auth code
 - refresh token
 - scope
 ```
