@@ -101,7 +101,7 @@ The authorization code is sent to the client from the authorization server, afte
 
 Once the client has the Authorization Code, the next step for the client is to request and Authorization Token from the Authorization Server. Once the client has the Authorization Token, the client can freely make Facebook posts for the specified user.
 
-<video src="https://github.com/user-attachments/assets/c4c9ecef-1b15-420c-957e-4b4639b52b9c" controls autoplay loop muted></video>
+<video src="https://github.com/user-attachments/assets/052946d3-669d-4fdc-90c3-6857f50f759f" controls autoplay loop muted></video>
 
 ![Diagram Legend](../images/authorization-code-legend.png)
 
