@@ -7,15 +7,29 @@ tags: ['OAuth']
 series: 'OAuth Simplified'
 ---
 
-## OAuth Definition
+## OAuth 2.0 Definition
 
-Definition of OAuth from RFC 6749 <https://tools.ietf.org/html/rfc6749>
+Definition of OAuth 2.0 from [RFC 6749](https://tools.ietf.org/html/rfc6749):
 
 "The OAuth 2.0 authorization framework enables a third-party application to obtain limited access to an HTTP service, either on behalf of a resource owner by orchestrating an approval interaction between the resource owner and the HTTP service, or by allowing the third-party application to obtain access on its own behalf."
 
-## OAuth components
+:::sweatingDuck
+That is quite a confusing definition!
+:::
 
-- Resource owner: An actual person that has access to an API. This person is comfortable and able able to delegate access to that API. This person also has access to a web browser.
+:::me
+Don't worry! After reading through this article, try to read this definition again. I promise you it will make sense.
+:::
+
+:::joyfulDuck
+Okay, let's go!
+:::
+
+One of the main usecases of OAuth 2.0 is to give third party applications limited access to the private resources that you own. We will see how that is exactly done throughout this article. But first, let's discuss the various components that we will see when learning OAuth 2.0.
+
+## OAuth 2.0 components
+
+- Resource owner: This is a person that has access to an API. This person is willing and able to delegate limited access to their API. Meaning, this person is willing to give access to a certain part of their API to another application. This person also has access to a web browser.
 - Protected resource: The component that the resource owner has access to. This is normally an API.
 - Client: The piece of software that access the protected resource on behalf of the resource owner.
 
