@@ -108,7 +108,7 @@ Phew! That was a lot. This OAuth solution might be difficult to understand by si
 
 ## Enhancing Security
 
-There is a security risk with the flow mentioned above. The entire authorization flow is happening on the [front channel](https://beingcraftsman.com/2023/12/02/simple-guide-to-front-channel-and-back-channel-requests/), from the browser, which can be listened to by an attacker. An attacker can intercept the flow and grab the OAuth Authorization Token for malicious activities.
+There is a security risk with the flow mentioned above. The entire authorization flow is happening on the [front channel](https://beingcraftsman.com/2023/12/02/simple-guide-to-front-channel-and-back-channel-requests/), from the browser, which can be listened to by an attacker. In that case, an attacker can intercept the flow and grab the OAuth Authorization Token for malicious activities.
 
 To guard the authorization flow from attackers, OAuth has introduced another token called the `OAuth authorization code`. This will be passed totally through the back channel which is highly secure. If an attacker was intercepting the user's browser, the attacker would only be able to access the front channel requests, not back channel, so the attacker would not get access to the authorization code.
 
