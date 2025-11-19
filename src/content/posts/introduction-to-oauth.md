@@ -97,7 +97,12 @@ For you to delegate your authorization of you Facebook to Strava, you will first
 
 Phew! That was a lot. This OAuth solution might be difficult to understand by simply reading through the previous paragraph, so let's see it in action through an animated diagram!
 
-<video src="https://github.com/user-attachments/assets/bee43c65-6d21-47dc-9959-220c186c6799" controls autoplay loop muted></video>
+<iframe
+  src="https://player.mux.com/FDBQwXfFFpyhSJzqsv2PqEladt8Cww4fxsew7OOsvpA?metadata-video-title=Implicit+flow&video-title=Implicit+flow"
+  style="width: 100%; border: none; aspect-ratio: 1/1;"
+  allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+  allowfullscreen
+></iframe>
 
 ![Diagram Legend](../images/implicit-flow-legend.png)
 
