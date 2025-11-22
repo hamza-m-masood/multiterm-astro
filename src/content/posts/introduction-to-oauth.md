@@ -189,9 +189,15 @@ account to Strava, the following steps will occur:
 6. You have successfully delegated your authorization of your Facebook
    account. Strava is now able to make a Facebook post on your behalf.
 
-:::me Phew! That was a lot. The OAuth flow might be difficult to understand
+<!-- markdownlint-disable -->
+<!-- prettier-ignore-start -->
+:::me
+Phew! That was a lot. The OAuth flow might be difficult to understand
 by simply reading through the previous steps. To make things easier, let's
-see the OAuth flow in action through an animated diagram! :::
+see the OAuth flow in action through an animated diagram!
+:::
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
 
 <iframe
   src="https://player.mux.com/FDBQwXfFFpyhSJzqsv2PqEladt8Cww4fxsew7OOsvpA?metadata-video-title=Implicit+flow&video-title=Implicit+flow"
@@ -314,13 +320,19 @@ of PKCSE and unique redirect URIs, public clients can be correctly
 identified and the authorization server can make sure that the access token
 is sent to the same client that started the flow.
 
-:::note PKCSE was initially created for mobile or single page applications
+<!-- markdownlint-disable -->
+<!-- prettier-ignore-start -->
+:::note
+PKCSE was initially created for mobile or single page applications
 which are treated as public clients. But recently, the OAuth 2.0 spec
 recommends to use PKCSE even for private clients to safeguard applications
 from attacks such as Authorization Code Injection. Even if your
 authorization server does not support PKCSE, you can still provide it in
 the URL, since authorization servers are designed to ignore parameters that
-they do not recognize. :::
+they do not recognize.
+:::
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
 
 In the next blog post, we will dive deep into the OAuth client and discuss
 its inner workings.
