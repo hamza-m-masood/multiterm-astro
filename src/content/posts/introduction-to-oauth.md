@@ -1,15 +1,16 @@
 ---
-title: "Part 1 - Introduction To OAuth"
-published: 2025-06-01
+title: Part 1 - Introduction To OAuth
+published: 2025-06-01T00:00:00.000Z
 draft: false
-description: "Introducing The OAuth protocol"
-tags: ["OAuth"]
-series: "OAuth Simplified"
+description: Introducing The OAuth protocol
+tags:
+  - OAuth
+series: OAuth Simplified
 ---
 
 ## OAuth 2.0 Definition
 
-Definition of OAuth 2.0 from
+Here is the official definition of of OAuth 2.0 according to
 [RFC 6749](https://tools.ietf.org/html/rfc6749):
 
 "The OAuth 2.0 authorization framework enables a third-party application to
@@ -37,39 +38,82 @@ Okay, let's go!
 
 One of the main use cases of OAuth 2.0 is to give third party applications
 limited access to the private resources that you own. We will see how that
-is exactly done throughout this article. But first, let's discuss the
-various components that we will see when learning OAuth 2.0.
+is exactly done throughout this article. Let's discuss an example where
+OAuth can be used.
+
+Let's say you are tracking your fitness activities through a sport activity
+tracking mobile application called
+[Strava](https://apps.apple.com/us/app/strava-run-bike-walk/id426826309).
+You would like Strava to automatically make a post on your behalf to your
+Facebook account so your friends can see your sports activity.
+
+Throughout this article, we’ll explore several methods for connecting
+Strava to your Facebook account. We’ll begin with the simplest connection
+options and progress toward implementing a complete OAuth flow:
+
+<iframe
+  src="https://player.mux.com/VeohLY4KkMoOgaV4hBRgKRQ022202io2XAYscSVO02u01bk?metadata-video-title=Authorization+grant+type+flow&video-title=Authorization+grant+type+flow"
+  style="width: 100%; border: none; aspect-ratio: 1/1;"
+  allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+  allowfullscreen
+></iframe>
+
+<!-- markdownlint-disable -->
+<!-- prettier-ignore-start -->
+:::me
+Don't worry if the above animation looks confusing. We're going to start
+off very simple. You will eventually undersatnd this flow when you get to
+the end of this article. I believe in you!
+:::
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+First of all, let's discuss the various components that we will see when
+learning OAuth 2.0.
 
 ## OAuth 2.0 components
 
-- Resource owner: This is a person that has access to an API. This person
-  is willing and able to delegate limited access to their API. Meaning,
-  this person is willing to give access to a certain part of their API to
-  another application. This person also has access to a web browser.
-- Protected resource: The component that the resource owner has access to.
-  This is normally an API.
-- Client: The piece of software that access the protected resource on
-  behalf of the resource owner.
+- **Resource Owner**: This is the person who controls access to an API and
+  can grant limited permission to another application. In other words, they
+  decide to share access to certain parts of their API with another app.
+  The resource owner also uses a web browser to approve this access. In our
+  example, the resource owner is you 🫵! You own the Facebook account (the
+  API) that Strava wants limited access to, so it can post on your behalf.
+- **Protected Resource**: The component that the resource owner (you) has
+  access to. This is normally an API. In our example, the Protected
+  Resource will be your Facebook account.
+- **Client**: The piece of software that access the protected resource
+  (your Facebook account) on behalf of the resource owner (you). In our
+  example the Client is the Strava.
 
-Let's say you are tracking your fitness activities through a sport activity
-tracking mobile application called Strava. You would like Strava to make a
-post on your behalf to your own Facebook account every time you finish a
-workout session.
+Let's map out the OAuth components once again according to our example:
 
-Let's map out the OAuth components in this example:
-
-- You are the OAuth `resource owner` since you are the owner of your
+- You are the OAuth `Resource Owner` since you are the owner of your
   Facebook account.
-- Your Facebook account is the OAuth `protected resource`.
-- Strava is the OAuth `client` that is trying to get access to Facebook on
-  your (resource owner) behalf.
+- Your Facebook account is the OAuth `Protected Resource`.
+- Strava is the OAuth `Client` that is trying to get access to Facebook on
+  your behalf to make a Facebook post of what exercise you did so your
+  friends can see that you're not lazy!
 
 The end goal is for Strava to be given access to your Facebook account in
 order to make posts. In other words, you as the user need to delegate
-authorization to the client (Strava), so the client can access the
-protected resource (Facebook).
+authorization to the Client (Strava), so the Client can access the
+Protected Resource (your Facebook account).
 
-![Showing the resource owner, client, protected resource relationship](../images/intro-oauth-1.png "Showing the resource owner, client, protected resource relationship")
+![Showing the Resource Owner, Client, Protected Resource relationship](../images/intro-oauth-1.png "Showing the Resource Owner, Client, and Protected Resource")
+
+<!-- markdownlint-disable -->
+<!-- prettier-ignore-start -->
+:::joyfulDuck
+I see how the Resource Owner, Client, and Protected Resource relate to our Strava example now!
+:::
+
+:::magnifyingglassme
+Let's see how we can authorize Strava to make a Facebook post on your
+behalf.
+:::
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
 
 ## Client Authorization
 
@@ -293,7 +337,7 @@ the authorization code is requested.
 
 Here is an example of what the authorization URL would look like:
 
-```bash
+```
 https://authorization-server.com/authorize?
   response_type=code
   &client_id=73NbzDrSNDeXM4-aIfCJnHte
