@@ -277,38 +277,62 @@ see the OAuth flow in action through an animated diagram!
 
 ## Enhancing Security
 
-There is a security risk with the flow mentioned above. The entire
-authorization flow is happening on the
+There is a potential security risk with the flow mentioned above. The
+entire authorization flow is happening on the
 [front channel](https://beingcraftsman.com/2023/12/02/simple-guide-to-front-channel-and-back-channel-requests/),
 from the browser, which can be listened to by an attacker. In that case, an
-attacker can intercept the flow and grab the OAuth Authorization Token for
+attacker can intercept the flow and grab the OAuth Access Token for
 malicious activities.
 
-To guard the authorization flow from attackers, OAuth has introduced
-another token called the `OAuth authorization code`. This will be passed
-totally through the back channel which is highly secure. If an attacker was
-intercepting the user's browser, the attacker would only be able to access
-the front channel requests, not back channel, so the attacker would not get
-access to the authorization code.
+To guard the authorization flow from attackers, OAuth 2.0 has introduced
+another token called the `OAuth Authorization Code`. The client receives
+this code via the front channel (browser redirect) and exchanges it
+securely for an access token via the back channel (direct server-to-server
+request). The Access Token is communicated through the back channel. If an
+attacker was intercepting the user's browser, the attacker would only be
+able to access the front channel requests, not back channel, so the
+attacker would not get the Access Token.
 
-Similar to the authorization code, the authorization token is also
-communicated through the back channel. This means that both the
-authorization code and the authorization token are treated as secret data
-that should not be shared.
+<!-- markdownlint-disable -->
+<!-- prettier-ignore-start -->
+:::me
+Let's recap on the difference between an **Authorization Code** and an
+**Access Token**
+:::
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
 
-So how does the authorization code get used in the above mentioned flow?
+- The **Authorization Code** is returned to the client after the user
+  successfully authenticates and approves the request from the client.
+- The **Access Token** is what the API will validate and use to decide
+  whether to grant access to specific operations.
 
-The authorization code is sent to the client from the authorization server,
-after the user approves the client. As mentioned, this Authorization Code
-is sent on the back channel. Also, the user gets redirected back to the
-client from the authorization server on the front channel.
+<!-- markdownlint-disable -->
+<!-- prettier-ignore-start -->
+:::confusedDuck
+So how does the Authorization Code actually get used in the flow?
+:::
 
-Once the client has the Authorization Code, the next step for the client is
-to request and Authorization Token from the Authorization Server. Once the
-client has the Authorization Token, the client can freely make Facebook
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+The Authorization Server sends the Authorization Code to the Client after
+the user grants approval. The Client then uses this Authorization Code in a
+secure back-channel request to authenticate itself to the Authorization
+Server and exchange the Authorization Code for an Access Token.
+
+Once the client has the Access Token, the client can freely make Facebook
 posts for the specified user.
 
-<!-- <video src="https://github.com/user-attachments/assets/052946d3-669d-4fdc-90c3-6857f50f759f" controls autoplay loop muted></video> -->
+<!-- markdownlint-disable -->
+<!-- prettier-ignore-start -->
+:::magnifyingglassme
+Here is a full video walkthrough of OAuth 2.0 Authorization Code Grant
+type.
+:::
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
 <iframe
   src="https://player.mux.com/VeohLY4KkMoOgaV4hBRgKRQ022202io2XAYscSVO02u01bk?metadata-video-title=Authorization+grant+type+flow&video-title=Authorization+grant+type+flow"
   style="width: 100%; border: none; aspect-ratio: 1/1;"
@@ -318,92 +342,4 @@ posts for the specified user.
 
 ![Diagram Legend](../images/authorization-code-legend.png)
 
-```yaml
-TODO: talk about:
-- refresh token
-- scope
-```
-
-That is the entire OAuth flow at a very high level! If you reached this
-point and understood the concepts then that means you understand what OAuth
-is! Well done! :rocket:
-
-## Client Types
-
-There are two client types in OAuth 2.0. Private clients, and public
-clients.
-
-A **private client** can also be known as a confidential client. An example
-of a private client can be a web application with a backend. The client
-secret can be stored in the backend of the web application and will not be
-viewable to the public. This is because the client secret is not exposed to
-the frontend. For this reason the private client can securely authenticate
-with the authorization server using its own client secret. In the above
-example, Strava is seen as a private client, since Strava has its own
-backend and can store its client secret securely.
-
-A **public client** is unable to store a client secret. An example of a
-public client would be a single page application with no backend. If the
-single page application were to store a client secret, then the client
-secret would be exposed to the public making it a security risk.
-
-## PKCSE
-
-If a public client does not have a client secret then how does the public
-client get an access token from the authorization server?
-
-This is where the Proof Key for Code Exchange (PKCSE) extension comes into
-play for public clients. The public client generates a code challenge. The
-code challenge is simply an SHA256 encrypted randomly generated string.
-Once generated, the code challenge is added to the initial redirect when
-the authorization code is requested.
-
-Here is an example of what the authorization URL would look like:
-
-```
-https://authorization-server.com/authorize?
-  response_type=code
-  &client_id=73NbzDrSNDeXM4-aIfCJnHte
-  &redirect_uri=https://www.oauth.com/playground/authorization-code-with-pkce.html
-  &scope=photo+offline_access
-  &code_challenge=NLMnmQNiZnKI_J9eEQIZLT1cZpZA-TbxuGMm3Te-54g
-  &code_challenge_method=S256
-```
-
-When the public client then requests the access token through the back
-channel from the authorization server after user approval, the code
-challenge is verified on the authorization server.
-
-The PKCSE extension makes sure that the authorization code is given the
-same app that started the flow. However, when using only the PKCSE
-extension, the authorization server can't identify the app. This leaves the
-app open to being impersonated.
-
-Since a client secret can't be used to identify a public client, the only
-real way is to make sure the redirect URI is unique to the public client.
-This is why it is so important to register the correct redirect URIs to the
-authorization server. Especially for public clients. By using a combination
-of PKCSE and unique redirect URIs, public clients can be correctly
-identified and the authorization server can make sure that the access token
-is sent to the same client that started the flow.
-
-<!-- markdownlint-disable -->
-<!-- prettier-ignore-start -->
-:::note
-PKCSE was initially created for mobile or single page applications
-which are treated as public clients. But recently, the OAuth 2.0 spec
-recommends to use PKCSE even for private clients to safeguard applications
-from attacks such as Authorization Code Injection. Even if your
-authorization server does not support PKCSE, you can still provide it in
-the URL, since authorization servers are designed to ignore parameters that
-they do not recognize.
-:::
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-In the next blog post, we will dive deep into the OAuth client and discuss
-its inner workings.
-
-## References
-
-[PKCSE on the OAuth 2.0 Playground](https://www.oauth.com/playground/authorization-code-with-pkce.html)
+That is the entire OAuth 2.0 flow at a high level! Well done! :rocket:
