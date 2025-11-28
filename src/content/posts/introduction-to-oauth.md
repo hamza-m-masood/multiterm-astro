@@ -42,7 +42,7 @@ is exactly done throughout this article. Let's discuss an example where
 OAuth can be used.
 
 Let's say you are tracking your fitness activities through a sport activity
-tracking mobile application called
+tracking application called
 [Strava](https://apps.apple.com/us/app/strava-run-bike-walk/id426826309).
 You would like Strava to automatically make a post on your behalf to your
 Facebook account so your friends can see your sports activity.
@@ -73,16 +73,17 @@ learning OAuth 2.0.
 
 ## OAuth 2.0 components
 
-- **Resource Owner**: This is the person who controls access to an API and
-  can grant limited permission to another application. In other words, they
-  decide to share access to certain parts of their API with another app.
-  The resource owner also uses a web browser to approve this access. In our
-  example, the resource owner is you 🫵! You own the Facebook account (the
-  API) that Strava wants limited access to, so it can post on your behalf.
+- **Resource Owner**: This is a real person who controls access to an API
+  and can grant limited permission to another application. In other words,
+  they decide to share access to certain parts of their API with another
+  app. The resource owner also uses a web browser to approve this access.
+  In our example, the resource owner is you 🫵! You own the Facebook
+  account (the API) that Strava wants limited access to, so it can make a
+  Facebook post on your behalf.
 - **Protected Resource**: The component that the resource owner (you) has
   access to. This is normally an API. In our example, the Protected
   Resource will be your Facebook account.
-- **Client**: The piece of software that access the protected resource
+- **Client**: The piece of software that accesses the protected resource
   (your Facebook account) on behalf of the resource owner (you). In our
   example the Client is the Strava.
 
@@ -136,24 +137,25 @@ current challenges we face with this setup:
   the future. So it does not have to notify you every time it will post on
   Facebook.
 
-Yikes! By solving the connection problem, we seem to have made quite a
-mess! We can do better!
+Yikes! By solving the connection problem for Strava to post on your
+Facebook account on your behalf, we seem to have made quite a mess! We can
+do better!
 
 Here is another solution: what if Strava could create a partnership with
 Facebook and get access to _all_ Facebook accounts by using a very secret
-password that is given by Facebook. This secret password would only allow
-Strava to make posts for users and nothing else. For example, Strava will
-not be able to send a Facebook friend a direct message on behalf of any
-user. Strava will _only_ be allowed to publish Facebook posts on behalf of
-any user.
+password that is given by Facebook to Strava. This secret password would
+only allow Strava to make posts for users and nothing else. For example,
+Strava will not be able to send a Facebook friend a direct message on
+behalf of any user. Strava will _only_ be allowed to publish Facebook posts
+on behalf of any user.
 
 ![Strava can post to any facebook account using it's all powerful token!](../images/intro-oauth-3.png "Strava can post to any facebook account using it's all powerful token!")
 
 As in the previous solution, the end goal is reached. Strava is now
-connected to Facebook and can public posts on your behalf. The benefit of
-this solution is that Strava will not have a need to ask for your password,
-or act on your behalf. Strava would just need to know your username and use
-it's all powerful, secret password given by Facebook to make a post on your
+connected to your Facebook and can publish posts on your behalf. The
+benefit of this solution is that Strava will not have a need to ask for
+your password. Strava would just need to know your username and use it's
+all powerful, secret password given by Facebook to make a post on your
 behalf. Just like it can do for any other user. Although this approach
 solves some of the problems mentioned in the previous solution, there are
 still some glaring flaws:
@@ -167,15 +169,27 @@ still some glaring flaws:
   you can't revoke Strava's access to your Facebook account. Strava can
   freely make posts on your behalf whenever it wants.
 
-Let's take this solution a little further!
+<!-- markdownlint-disable -->
+<!-- prettier-ignore-start -->
+:::sweatingDuck
+That’s concerning!! Even if Strava achieves the goal by posting on Facebook
+for me, it still shouldn’t have that level of access.
 
-What if _you_ could provide a Facebook password (other than your own) to
-Strava that will allow Strava to _only_ post on your behalf and nothing
-else. For example, _Strava_ will not be able to view your friends list
-because it only has just enough access to post on your behalf. Let's name
-this password that you will provide a `token`.
+:::
 
-![The user gives Strava a special password that only allows for publishing posts on the resource owner's account](../images/intro-oauth-4.png "The user gives Strava a special password that only allows for publishing posts on the resource owner's account")
+:::me
+Don't worry. Let's take this solution a little further!
+:::
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+What if you could give Strava a special Facebook password (other than your
+real password) that lets it post on your behalf but nothing else. For
+example, Strava wouldn’t be able to see your friends list because this
+password only grants the permission needed to publish posts. We’ll call
+this special password a `token.`
+
+![The user gives Strava a special password (token) that only allows for publishing posts on the resource owner's account](../images/intro-oauth-4.png "The user gives Strava a special token (password) that only allows for publishing posts on the resource owner's account")
 
 This is looking much better than the very first solution of Strava
 replaying the user credentials to Facebook. Strava now only has access to
@@ -185,29 +199,36 @@ universal access to make posts for any user anymore. Although this is a
 good solution, it is still not optimal. Let's discuss the challenges we
 face with this setup:
 
-- What if you as a user have several fitness app that track your health and
-  post for you on your Facebook account. You would have to manage several
-  passwords (tokens) for each fitness app. You could provide the same token
-  for each fitness app but that would lead to a security risk. Meaning, if
-  one fitness app token is compromised, all other fitness apps would be at
-  risk.
+- What if you as a user have several fitness apps that track your health
+  and post for you on your Facebook account. You would have to manage
+  several tokens (password) for each fitness app. You could provide the
+  same token for each fitness app but that would lead to a security risk.
+  Meaning, if one fitness app token is compromised, all other fitness apps
+  would be at risk.
 - There is no way for you to revoke access to Strava other than changing
   your password. So there is no correlation between the Strava (client) and
   the token.
 
-We can still do better than this!
+<!-- markdownlint-disable -->
+<!-- prettier-ignore-start -->
+:::strongme
+We can still do better!
+:::
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
 
 What if we were able to have this token issued separately for each client
-and user combination to be used at a protected resource? What if there was
-a network protocol that allowed for the generation and secure distribution
-of these credentials? Now we are getting somewhere!
+and user combination to be used at a protected resource, such as your
+Facebook account? What if there was a network protocol that allowed for the
+generation and secure distribution of these tokens? Now we are getting
+somewhere!
 
 ## Delegating Access
 
-The network protocol in question is called OAuth! Once again, the end goal
-is for the you to _delegate_ your authority of your Facebook account to
-Strava, so it can publish posts on your behalf. OAuth introduces another
-component into the solution called the _Authorization Server_.
+The network protocol in question is called OAuth 2.0! Once again, the end
+goal is for you, the user to _delegate_ your authority of your Facebook
+account to Strava, so it can publish posts on your behalf. OAuth introduces
+another component into the solution called the _Authorization Server_.
 
 ![Introducing the Authorization Server](../images/intro-oauth-5.png "Introducing the Authorization Server")
 
@@ -221,15 +242,17 @@ For you (the OAuth user) to delegate the authorization of your Facebook
 account to Strava, the following steps will occur:
 
 1. You access Strava (the OAuth client).
-2. Strava redirects you to the Authorization Server.
+2. Strava
+   [redirects](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Redirections)
+   you to the Authorization Server.
 3. You authenticate yourself to the Authorization Server.
 4. You will be given a choice if you would like to delegate your
    authorization to Strava. The Authorization Server will tell you exactly
    what Strava will be able to do on your Facebook account. You consent to
    delegate authorization of your Facebook account to Strava.
-5. Then the authorization server will send a special token to Strava called
-   an _OAuth Access Token_ which will allow Strava to connect to your
-   Facebook account and publish posts!
+5. The authorization server will send a special token to Strava called an
+   _OAuth Access Token_ which will allow Strava to connect to your Facebook
+   account and publish posts!
 6. You have successfully delegated your authorization of your Facebook
    account. Strava is now able to make a Facebook post on your behalf.
 
