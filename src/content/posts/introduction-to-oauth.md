@@ -77,15 +77,15 @@ learning OAuth 2.0.
   and can grant limited permission to another application. In other words,
   they decide to share access to certain parts of their API with another
   app. The resource owner also uses a web browser to approve this access.
-  In our example, the resource owner is you 🫵! You own the Facebook
+  In our example, the Resource Owner is you 🫵! You own the Facebook
   account (the API) that Strava wants limited access to, so it can make a
   Facebook post on your behalf.
-- **Protected Resource**: The component that the resource owner (you) has
+- **Protected Resource**: The component that the Resource Owner (you) has
   access to. This is normally an API. In our example, the Protected
   Resource will be your Facebook account.
 - **Client**: The piece of software that accesses the protected resource
   (your Facebook account) on behalf of the resource owner (you). In our
-  example the Client is the Strava.
+  example the Client is Strava.
 
 Let's map out the OAuth components once again according to our example:
 
