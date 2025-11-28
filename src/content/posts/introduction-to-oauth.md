@@ -52,7 +52,7 @@ Strava to your Facebook account. We’ll begin with the simplest connection
 options and progress toward implementing a complete OAuth flow:
 
 <iframe
-  src="https://player.mux.com/VeohLY4KkMoOgaV4hBRgKRQ022202io2XAYscSVO02u01bk?metadata-video-title=Authorization+grant+type+flow&video-title=Authorization+grant+type+flow"
+  src="https://player.mux.com/enC007pOMEgTx6Dyvjy2Si58qgk4OGLeIM011aTylQSqM?metadata-video-title=Authorization+grant+type+flow&video-title=Authorization+grant+type+flow"
   style="width: 100%; border: none; aspect-ratio: 1/1;"
   allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
   allowfullscreen
@@ -267,7 +267,7 @@ see the OAuth flow in action through an animated diagram!
 <!-- prettier-ignore-end -->
 
 <iframe
-  src="https://player.mux.com/FDBQwXfFFpyhSJzqsv2PqEladt8Cww4fxsew7OOsvpA?metadata-video-title=Implicit+flow&video-title=Implicit+flow"
+  src="https://player.mux.com/dP246ghJPjwQ1akDGPFlo3Qq9SXEGPW1cbH01T022a1X4?metadata-video-title=implicit+flow+&video-title=implicit+flow+"
   style="width: 100%; border: none; aspect-ratio: 1/1;"
   allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
   allowfullscreen
@@ -334,7 +334,7 @@ type.
 <!-- prettier-ignore-end -->
 
 <iframe
-  src="https://player.mux.com/VeohLY4KkMoOgaV4hBRgKRQ022202io2XAYscSVO02u01bk?metadata-video-title=Authorization+grant+type+flow&video-title=Authorization+grant+type+flow"
+  src="https://player.mux.com/enC007pOMEgTx6Dyvjy2Si58qgk4OGLeIM011aTylQSqM?metadata-video-title=Authorization+grant+type+flow&video-title=Authorization+grant+type+flow"
   style="width: 100%; border: none; aspect-ratio: 1/1;"
   allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
   allowfullscreen
