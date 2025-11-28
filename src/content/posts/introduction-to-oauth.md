@@ -71,7 +71,7 @@ the end of this article. I believe in you!
 First of all, let's discuss the various components that we will see when
 learning OAuth 2.0.
 
-## OAuth 2.0 components
+## OAuth 2.0 Components
 
 - **Resource Owner**: This is a real person who controls access to an API
   and can grant limited permission to another application. In other words,
