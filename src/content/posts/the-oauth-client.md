@@ -8,7 +8,32 @@ tags: ["OAuth"]
 series: "OAuth Simplified"
 ---
 
-This is a walk-through of the OAuth flow (authorization code grant type):
+```
+notes:
+
+content:
+- keep with the same example of Strava acting as the client.
+- Meaning of redirection
+- Meaning of a back channel vs. front channel call
+- Example of PKCSE
+- Difference between a public and private client
+- Strava running on web, mobile. Also give example of a single page app (can't be strava)
+- Auth/token endpoint.
+
+animations:
+- redirection
+- Example of PKCSE
+```
+
+## Intorduction
+
+In the previous blog post, we walked through the
+[Authorization Code grant type](/posts/introduction-to-oauth#enhancing-security).
+We will continue using the example of Strava connecting to your Facebook
+account on your behalf in order to make a post.
+
+In this blog post, we will dive deeper into the OAuth Client component and
+discuss various security concepts around it.
 
 ## Client Types
 
@@ -44,6 +69,9 @@ requires two endpoints:
 - The **token endpoint** to get an authorization code if the authorization
   token is accepted. The client doesn't need to know anything about the
   server beyond that.
+- fetching the auth code/token
+- refresh token
+-
 
 ## Fetching the Authorization Code
 
