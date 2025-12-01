@@ -33,7 +33,24 @@ We will continue using the example of Strava connecting to your Facebook
 account on your behalf in order to make a post.
 
 In this blog post, we will dive deeper into the OAuth Client component and
-discuss various security concepts around it.
+discuss various security concepts around it. Once we have covered the
+foundations, we will discuss why it is important for the client to use the
+PKCE (Proof Key for Code Exchange) extension. Once again, just like the
+previous post, this is the animation that we will walk through in the end:
+
+```
+add animation here
+```
+
+<!-- markdownlint-disable -->
+<!-- prettier-ignore-start -->
+:::me
+Don't worry if the animation looks confusing. We will build ourselves up to
+understand it just like last the [previous blog post](/posts/introduction-to-oauth#oauth-20-definition)! 
+:::
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
 
 ## Client Types
 
