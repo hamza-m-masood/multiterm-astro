@@ -13,12 +13,12 @@ notes:
 
 content:
 - keep with the same example of Strava acting as the client.
-- Meaning of redirection
 - Meaning of a back channel vs. front channel call
+- Meaning of redirection
+- Auth/token endpoint.
 - Example of PKCSE
 - Difference between a public and private client
 - Strava running on web, mobile. Also give example of a single page app (can't be strava)
-- Auth/token endpoint.
 
 animations:
 - redirection
@@ -35,8 +35,8 @@ account on your behalf in order to make a post.
 In this blog post, we will dive deeper into the OAuth Client component and
 discuss various security concepts around it. Once we have covered the
 foundations, we will discuss why it is important for the client to use the
-PKCE (Proof Key for Code Exchange) extension. Once again, just like the
-previous post, this is the animation that we will walk through in the end:
+PKCE (Proof Key for Code Exchange) extension. Here is an animation of a
+simulated CSRF attack that does not take advantage of the PKCE extension:
 
 ```
 add animation here
@@ -46,11 +46,24 @@ add animation here
 <!-- prettier-ignore-start -->
 :::me
 Don't worry if the animation looks confusing. We will build ourselves up to
-understand it just like last the [previous blog post](/posts/introduction-to-oauth#oauth-20-definition)! 
+understand it just like last the [previous blog post](/posts/introduction-to-oauth#oauth-20-definition), and also learn ways to stop this kind of attack using the PKCE extension!
 :::
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
+
+# notes on CSRF animation
+
+1. attacker accesses strava
+2. attacker is redirected to auth server and authenticates
+3. attacker stops the flow and grabs the redirect URI (redirect URI example
+   link)
+4. attacker makes user click on redirect link through phishing email
+5. user continues the oauth flow from where it left off by sending the auth
+   code of the attacker to the client
+6. client uses auth code to request for access token
+7. access token is used by client to make FB posts on attacker's FB
+   account.
 
 ## Client Types
 
