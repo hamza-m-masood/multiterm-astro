@@ -47,7 +47,7 @@ understand it just like the [previous blog post](/posts/introduction-to-oauth#oa
 Let's start discussing various concepts that are used in relation to the
 OAuth Client.
 
-## Redirection
+## URL Redirect
 
 Here is the definition of a
 [URL redirection](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Redirections):
@@ -74,6 +74,32 @@ user to delegate authorization. So when the user initially clicks on the
 link of the client, the user gets sent (redirected) to the Authorization
 Server.
 
+To summarize, the OAuth Client does not want to directly communicate with
+the Authorization Server, since the user must consent directly with the
+Authorization Server to delegate the user's permissions to the client. This
+is why the client redirects the user to the Authorization Server. The
+client treats the user's browser as a middle-man between itself and the
+Authorization Server.
+
+If the client were to directly communicate with the authorization server to
+grab the Access Token when the user initially sends a request to the
+client, then this would lead to several problems:
+
+- As mentioned, the user must consent directly to the Authorization Server.
+- User authentication would happen on the client, and the client would need
+  to replay the user credentials on the Authorization Server.
+
+For thesee reasons, it is important for the URL redirect to exist in OAuth
+2.0.
+
+<!-- markdownlint-disable -->
+<!-- prettier-ignore-start -->
+:::joyfulDuck
+Now I understand what a URL Redirect is, and why it is needed for OAuth 2.0! 
+:::
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
 ## Back Channel vs. Front Channel
 
 Back Channel and Front Channel communication is not particular to OAuth. It
@@ -82,7 +108,8 @@ is more of a networking concept.
 **Front Channel** communication is when network communication is done
 through the browser. For example in the previous blog post, the user
 accesses the client and gets sent (redirected) to the Authorization Server,
-through their browser.
+through their browser. If there is a URL Redirect, then it will always
+happen on the front channel!
 
 **Back Channel** communication is when a direct request is sent to a server
 without any middle-man. This becomes highly secure especially when HTTPS is
@@ -94,13 +121,12 @@ Server, and did not go through the user's browser.
 <!-- markdownlint-disable -->
 <!-- prettier-ignore-start -->
 :::confusedDuck
-How does the client know how to talk to the Authorization Server to send a
-direct request for the Access Token?
+When the client has the Authorization Code from the URL redirect, how does it then directly talk to the Authorization Server to request an Access Token?
 :::
 
 :::me
 To answer that question, let's take a step back and look at the calls made
-in the OAuth flow, with the perspective of the client.
+in the OAuth flow, from start to end, with the perspective of the client.
 :::
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
@@ -115,7 +141,7 @@ client ID and client secret from the authorization server.
 <!-- markdownlint-disable -->
 <!-- prettier-ignore-start -->
 :::me
-We’ll cover client registration when we explore the Authorization Server in upcoming posts in this series.  
+We’ll cover client registration and how the client grabs the client ID and client secret from the Authorization Server when we explore the Authorization Server in upcoming posts in this series.  
 :::
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
@@ -124,14 +150,17 @@ Once the client has the client ID and the client secret, the client needs
 to know how to talk to the Authorization Server. The client requires two
 endpoints:
 
-- The **authorization endpoint** to get the Authorization Code.
+- The **authorization endpoint** to get the Authorization Code. In this
+  example, we will use the following endpoint to grab the Authorization
+  Code: `https://auth-server/authorize`.
 - The **token endpoint** to get an Access Token by providing a valid
-  Authorization Code.
+  Authorization Code. In this example, we will use the following endpoint
+  to grab the Access Token: `https://auth-server/token`.
 
 The client doesn't need to know anything about the Authorization Server
 beyond that.
 
-### User Redirection
+### URL Redirect For User
 
 Once the user accesses the client, the user is redirected to the
 Authorization Server using the authorization endpoint `/authorize` to
@@ -148,8 +177,8 @@ This would form an HTTP redirect like the following:
 
 ```bash
 HTTP/1.1 302 Moved Temporarily
-Location: https://auth-server:9001/authorize?response_type=code&scope=post&client_id=strava
--1&redirect_uri=http%3A%2F%2Fstrava%3A9000%
+Location: https://auth-server/authorize?response_type=code&scope=post&client_id=strava
+-1&redirect_uri=http%3A%2F%2Fstrava
 Vary: Accept
 Content-Type: text/html; charset=utf-8
 Content-Length: 444
@@ -161,18 +190,19 @@ following to the Authorization Server:
 
 ```bash
 GET /authorize?response_type=code&scope=post&client_id=strava
--1&redirect_uri=http%3A%2F%2Fstrava%3A9000%
+-1&redirect_uri=http%3A%2F%2Fstrava
 2Fcallback HTTP/1.1
-Host: auth-server:9001
+Host: auth-server
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
 ```
 
 ### Client Requests Access Token
 
-The client receives an Authorization Code from the Authorization Server
-when the user is redirected back to the client. The Authorization Code
-represents as the result of the user's authorization decision. Here is what
-the call back to the client from the Authorization Server looks like:
+When the user is redirected back to the client from the Authorization
+Server, the client receives an Authorization Code from the response. The
+Authorization Code represents the result of the user's authorization
+decision. Here is what the callback to the client from the Authorization
+Server looks like:
 
 ```bash
 GET /callback?code=8V1pr0rJ
@@ -180,7 +210,7 @@ Host: strava.com
 ```
 
 The client can parse the request and grab the Authorization Code. The
-client is Now ready for the next step, which is requesting for the Access
+client is now ready for the next step, which is requesting for the Access
 Token. This is done by the client providing the following information in
 the `POST` request to the `/token` endpoint on the Authorization Server:
 
@@ -194,16 +224,17 @@ request would look like:
 
 ```bash
 POST /token
-Host: auth-server:9001
+Host: auth-server
 Accept: application/json
 Content-type: application/x-www-form-encoded
 Authorization: Basic b2F1dGgtY2xpZW50LTE6b2F1dGgtY2xpZW50LXNlY3JldC0x
 grant_type=authorization_code&
-redirect_uri=https%3A%2F%2Fstrava%3A9000%2Fcallback&code=8V1pr0rJ
+redirect_uri=https%3A%2F%2Fstrava0%2Fcallback&code=8V1pr0rJ
 ```
 
 If the request is successful, then the client would get an Access Token
-back from the Authorization Server. Here is what the call would look like:
+back from the Authorization Server. Here is what the response would look
+like from the Authorization Server to the client:
 
 ```bash
 HTTP 200 OK
@@ -350,7 +381,7 @@ public client would be a single page application with no backend. If the
 single page application were to store a client secret, then the client
 secret would be exposed to the public making it a security risk.
 
-## Refresh Tokn
+## Refresh Token
 
 <!-- markdownlint-disable -->
 <!-- prettier-ignore-start -->
@@ -364,16 +395,15 @@ In that case, the OAuth flow, would start again and the user would be sent
 to the Authorization Server again in order to delegate the user's
 permissions to the client. This can get very cumbersome. Especially when
 the lifetime of the Access Token is short. The user might have to grant the
-client permissions mutliple times a day. To combat this the OAuth protocol
+client permissions multiple times a day. To combat this the OAuth protocol
 has a new token called the Refresh Token.
 
-Adding a refresh token is possible in the Authorization Code Grant Type. If
-Refresh Tokens are enabled on an Authorization Server, then the client
+If Refresh Tokens are enabled on an Authorization Server, then the client
 would receive a Refresh Token alongside the Access Token. The Refresh Token
 generally has a longer lifespan than the Access Token. Once the client
 receives a Refresh Token from the Authorization Server, it is then possible
-to request an access token by sending but instead, changing the
-`grant_type`:
+to request another access token by sending the Refresh Token, and changing
+the `grant_type` to `refresh_token`, like so:
 
 ```bash
 {
@@ -382,9 +412,12 @@ to request an access token by sending but instead, changing the
 }
 ```
 
-**2.3** The authorization server might send back a `refresh_token` with the
-`access_token`, if that is the case, then the client must use that
-`refresh_token` going forward:
+The authorization server might send back a `refresh_token` with the
+`access_token`. This means the client just has to use the new refresh token
+sent by the Authorization Server. In some cases the Refresh Token might not
+even have changed in the response of the Authorization Server. This means
+that the previous token is still good to use. Here is what the response
+from the Authorization Server would look like:
 
 ```bash
 # RESPONSE FROM AUTHORIZATION SERVER
@@ -396,15 +429,30 @@ to request an access token by sending but instead, changing the
 }
 ```
 
+<!-- markdownlint-disable -->
+<!-- prettier-ignore-start -->
+:::me
+Keep in mind! The Refresh Token can only be used between the Authorzation
+Server and the Client. 
+:::
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+The Refresh Token must never be sent to the Protected Resource. This
+reduces the attack surface of the Refresh Token since it has a longer
+lifespan than the Access Token, so it should remain in the back channel.
+Meaning, direct calls to and from the Client and the Authorization Server.
+
 The client cannot know if the Access Token has expired. The Authorization
 Server can give a hint by providing an expiration date, but other than
-that, the only way to know would be to use Access Code on the Protected
-Resource. A well-behaved client would throw out the token before the
-expiry. When the client requests a token a second time from the
-authorization server, the user is not prompted; instead, a refresh token is
-provided.
+that, the only way to know would be to use the Access Token on the
+Protected Resource. A well-behaved client would throw out the Access Token
+before the expiry. When the client requests an Access Token a second time
+from the Authorization Server, using the Refresh Token, the user is not
+prompted; instead, an Access Token is provided without forcing the user
+through the consent screen again. This is known as
+[TOFU (trust on first use)](https://en.wikipedia.org/wiki/Trust_on_first_use).
 
-# References
-
-- Token types, other than bearer token:
-  <https://curity.medium.com/the-different-token-types-and-formats-explained-19dd8b947b2e>
+You should now have a clear understanding of the OAuth client and
+understand how the client can be protected from CSRF attacks. The next post
+will go through the OAuth protected resource.
