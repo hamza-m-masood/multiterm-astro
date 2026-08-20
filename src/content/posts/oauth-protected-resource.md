@@ -177,7 +177,7 @@ That lookup is what OAuth calls
 Before we dive into the inner workings of Token Introspection, we must
 first learn how a token is sent to the protected resource.
 
-## Sending The Token
+## Sending The Access Token
 
 Once Strava has an Access Token, it needs to attach it to every request it
 makes to Facebook. According to the
