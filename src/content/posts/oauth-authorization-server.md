@@ -129,6 +129,8 @@ to each individual user:
 These unique values are all obtained from the singular Strava client
 registered to the Authorization Server.
 
+### Dynamic Client Registration
+
 Static client registration does not work well in every case. Let's take
 Email as another example. A mail provider's Authorization Server has to let
 outside applications access a user's inbox on their behalf, and unlike
@@ -156,8 +158,6 @@ altogether. And it doesn't help confidential clients at all, since each one
 still needs its own, freshly generated secret.
 
 :::
-
-### Dynamic Client Registration
 
 The solution to the above scalability problem is Dynamic Client
 Registration: A way for clients to dynamically register themselves on an
