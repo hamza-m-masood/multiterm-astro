@@ -9,8 +9,8 @@ series: "OAuth Simplified"
 
 ## What is an Authorization Server?
 
-The Authorization Server is the final component in the OAuth dance. It is
-the most critical and the most complex. It's the trusted middle-man making
+The Authorization Server is the central component in the OAuth dance. It is
+the most critical and the most complex. It's the trusted middleman making
 sure users can share their details without exposing their password to the
 client or the protected resource. As much complexity as possible is moved
 to the Authorization Server so clients and protected resources can be as
@@ -23,8 +23,7 @@ The Authorization Server is responsible for the following:
 - Authorizing clients and making sure the correct permissions are delegated
   from the user to the client.
 - Dispensing Authorization Codes and Access Tokens to clients.
-- Introspecting Access Tokens for the protected resources it is responsible
-  for.
+- Introspecting Access Tokens on behalf of its protected resources.
 
 ## Client Registration
 
@@ -76,7 +75,7 @@ Authentication is not possible.
 
 :::me
 
-Great question! This is where PKC
+Great question! This is where PKCE
 
 :::
 
