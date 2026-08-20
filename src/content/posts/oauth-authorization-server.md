@@ -77,11 +77,18 @@ how the user's authorizations end up delegated to the client:
    [Implicit Grant Type](/posts/introduction-to-oauth#delegating-access)
    and the
    [Authorization Code Grant Type](/posts/introduction-to-oauth#enhancing-security).
-   We will go through more flows in a future blog post!
+   We will go through more grant types in a future blog post!
 4. **Scopes**: It's required to enter in the
    [scopes](/posts/oauth-protected-resource#scope) that the client needs in
    order for the user to be notified. For example, our Strava application
    requires the `post` scope to make Facebook posts on the user's behalf.
+5. **Audience**: In most cases, specifying an Audience is optional. The
+   Audience value can be thought of in constrast to the Scope value. The
+   Scope value defines _what_ the client can do. The Audience value defines
+   _which_ private resource is the Access Token meant for. In our
+   Strava/Facebook example the Audience value would be
+   `https://api.facoobook.com`. This is because the Strava client is only
+   ever interested to connect to Facebook, and no other protected resource.
 
 :::confusedDuck
 
@@ -141,43 +148,117 @@ with new ones showing up all the time.
 Nobody wants an administrator manually pre-registering every email client
 that might ever try to connect. That doesn't scale.
 
+The solution to the above scalability problem is Dynamic Client
+Registration: A way for clients to dynamically register themselves on an
+Authorization Server that accepts this protocol.
+
+Dynamic Client Registration is done by the Authorization Server exposing an
+endpoint called `/register`. Instead of an administrator filling out a form
+on the Authorization Server to statically create register a client, the
+client itself sends a request to this endpoint describing what it needs.
+
 :::confusedDuck
 
-Couldn't an email client just ship with a fixed client ID pre-baked into
-it, instead of registering with the Authorization Server?
+Is it still necessary for the client to provide the redirect URIs, scopes
+etc... when the client sends a request to the `/register` endpoint?
 
 :::
 
 :::me
 
-For a public client, sort of. Since there's no secret to protect, the same
-client ID can be compiled into every copy of the app and shared by every
-user of that client. But it still has to be registered with the
-Authorization Server ahead of time; nothing lets it skip registration
-altogether. And it doesn't help confidential clients at all, since each one
-still needs its own, freshly generated secret.
+Yes! That data is still needed in the call. Below is an example request
+with all the details that client needs to provide in order for it to be
+dynamically registered on the Authorization Server.
 
 :::
 
-The solution to the above scalability problem is Dynamic Client
-Registration: A way for clients to dynamically register themselves on an
-Authorization Server that accepts this protocol. Typically, this is done by
-the authorization server exposing an endpont called`/register`. When the
-client sends a request to this endpoint, the authorization server would
-send back a client ID and client secret. Which the client can then use to
-further communicate with the authorization server.
+```bash
+POST /register HTTP/1.1
+Host: auth-server
+Content-Type: application/json
+Accept: application/json
+
+{
+  "client_name": "Superhuman",
+  "redirect_uris": ["https://superhuman.com/callback"],
+  "grant_types": ["authorization_code"],
+  "response_types": ["code"],
+  "token_endpoint_auth_method": "client_secret_basic",
+  "scope": "read_email"
+}
+```
+
+[Superhuman](https://superhuman.com/), syncs a user's mail through its own
+backend servers rather than reading it directly on the user's device, so it
+registers as a confidential client. Note the `token_endpoint_auth_method`
+of `client_secret_basic`, which tells the Authorization Server to treat
+Superhuman as a private client. The Authorization Server responds with a
+`client ID` and, since this is a confidential client, a `client secret`:
+
+```bash
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+  "client_id": "5b6f2a91-8c3d-4e7f-a1b2-9d0e6f4c8a72",
+  "client_secret": "f4a7c9e2-1d6b-4a8f-9c3e-7b2d5f8a0c14",
+  "client_name": "Superhuman",
+  "redirect_uris": ["https://superhuman.com/callback"],
+  "grant_types": ["authorization_code"],
+  "response_types": ["code"],
+  "token_endpoint_auth_method": "client_secret_basic",
+  "scope": "read_email"
+}
+```
+
+The client can then use this `client ID` (and `client secret`, if it
+registered as confidential) to further communicate with the Authorization
+Server, for example, to request an Access Token.
+
+:::joyfulDuck
+
+I now have a deep understanding of how clients are registered on the
+Authorization Server!!
+
+:::
+
+:::strongme
+
+Great!! Let's move on and take a deeper look at how the Authorization
+Server prompts the user to authorize a specific client.
+
+:::
 
 ## The Authorization Endpoint
 
-The authorization endpoint is exposed by the Authorization Server to accept
-redirected users from the Client. Typically the endpoint is named
+At this stage we will assume that the client is registered on te
+Authorization server, and an OAuth flow has been start. Keeping with our
+Strava/Facebook example. The user has accessed Strava, and now is
+redirected to the Authorization Server.
+
+The client can redirect the user to the Authorization Server by using the
+authorization endpoint which is exposed by the Authorization Server to
+accept redirected users from the Client. Typically the endpoint is named
 `/authorize`. The redirect flow was discussed in the
-[OAuth Client deep-dive blog](/posts/oauth-client#url-redirect-for-user)
+[OAuth Client deep-dive blog](/posts/oauth-client#url-redirect-for-user),
+where an example was given using the `/authorize` endpoint.
+
+The user is then prompted to authenticate. Although there are stage in
+OAuth 2.0 that require authentication, the spec does not contain how
+authentication should be implemented. This is the reason why OIDC was
+invented to sit on top of the OAuth 2.0, which will be discussed in another
+blog post.
 
 ## The Consent Screen
 
-Once the user is redirected to the Authorization Server. The user is then
-presented with options
+A this stage we will assume the following:
+
+- The client (Strava) is registered
+- The user has accessed Strava and is now redirected to the Authorization
+  Server to confirm that the user is comfortable to give permissions to
+  Strava to make a Facebook post on the user's behalf.
+
+This is typically what the user consent screen would look like:
 
 ![Strava Consent](../images/strava-consent.png)
 
