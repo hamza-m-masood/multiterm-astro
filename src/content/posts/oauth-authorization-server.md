@@ -224,14 +224,14 @@ Authorization Server!!
 
 :::strongme
 
-Great!! Let's move on and take a deeper look at how the Authorization
-Server prompts the user to authorize a specific client.
+Great!! Let's move on and take a deeper look at what else the Authorization
+Server does after client registration.
 
 :::
 
 ## The Authorization Endpoint
 
-At this stage we will assume that the client is registered on te
+At this stage we will assume that the client is registered on the
 Authorization server, and an OAuth flow has been start. Keeping with our
 Strava/Facebook example. The user has accessed Strava, and now is
 redirected to the Authorization Server.
@@ -258,12 +258,91 @@ A this stage we will assume the following:
   Server to confirm that the user is comfortable to give permissions to
   Strava to make a Facebook post on the user's behalf.
 
-This is typically what the user consent screen would look like:
+This is typically what the user consent screen would look like on the
+Authorization Server:
 
 ![Strava Consent](../images/strava-consent.png)
 
+Once the user approves this message, then the user will officially delegate
+their authorizations to Strava. In this case, Strava will now have
+permissions to make a Facebook post on the user's behalf.
+
+After approval the Authorization Server will generate an "Authorization
+Code" for Strava. This will be included in the response when the user is
+redirected back to Strava.
+
+:::note
+
+This is where the Redirect URIs becomes very important for the registered
+client (Strava). The Authorization Server needs to know where exactly to
+send the user back to. This is also a safety mechanism, since another
+redirect URI, outside the list of registered redirect URIs will not be
+accepted.
+
+:::
+
+Here is an example of an HTTP call with the user getting redirected back to
+Strava with the Authorization Code:
+
+```bash
+HTTP/1.1 302 Found
+Location: https://strava.com/callback?code=8V1pr0rJ
+Vary: Accept
+Content-Type: text/html; charset=utf-8
+Content-Length: 0
+Connection: keep-alive
+```
+
+The Authorization Code is saved in the Authorization Server's database.
+This is because the next stage in the OAuth dance is for Strava to request
+an Access Token. The Authorization Server must compare the saved
+Authorization Code to the one that the Strava will send (along with the
+client ID and secret) when requesting for an Access Token.
+
 ## The Token Endpoint
 
-## Client Authentication
+At this stage we can assume that the user has delegated their
+authorizations to Strava. This means that Strava is now able to make a
+Facebook post on the user's behalf. Strava has an Authorization Code that
+was received from the Authorization Server when the user was redirected
+back, and now Strava needs an Access Token.
+
+We already saw what the client needs to in order to
+[request an Access Token](/posts/oauth-client#client-requests-access-token).
+Let's take a look at what happens in the perspective of the Authorization
+Server.
+
+As mentioned, in order for the client to request an Access Token, it
+typically needs to make a call to the `/token` endpoint. Here is an example
+of an incoming HTTP request that the Authorization Server needs to deal
+with:
+
+```bash
+POST /token HTTP/1.1
+Host: auth-server
+Accept: application/json
+Content-type: application/x-www-form-urlencoded
+Authorization: Basic c3RyYXZhOjhmM2UxYzAyLWE5YjctNGQ2YS05YzhiLTFlMmY0YTVkNmM3Yg==
+
+grant_type=authorization_code&redirect_uri=https%3A%2F%2Fstrava.com%2Fcallback&code=8V1pr0rJ
+```
+
+The Authorization Server decodes the `Authorization` header to recover the
+`client ID` and `client secret`, and compares the `code` against the
+Authorization Code it saved earlier for Strava. If everything matches, and
+the `redirect_uri` matches the one Strava registered, the Authorization
+Server responds with an Access Token:
+
+```bash
+HTTP/1.1 200 OK
+Date: Fri, 31 Jul 2026 21:19:03 GMT
+Content-type: application/json
+
+{
+  "access_token": "987tghjkiu6trfghjuytrghj",
+  "token_type": "Bearer",
+  "expires_in": 3600
+}
+```
 
 ## Conclusion
